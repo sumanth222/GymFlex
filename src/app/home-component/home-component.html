@@ -1,0 +1,50 @@
+<!-- Home Component - Beautiful Zomato/Airbnb Inspired UI -->
+<div class="home-page">
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <h1 class="title">Discover Gyms Near You</h1>
+    <p class="subtitle">Daily passes • No membership • Train anywhere</p>
+
+    <!-- SEARCH BAR -->
+    <div class="search-box">
+      <input type="text" placeholder="Search by area, landmark or gym name" />
+      <button class="search-btn">Search</button>
+    </div>
+  </section>
+
+  <!-- GYM LIST -->
+  <section class="gym-list" *ngIf="state === 'success'">
+    <div class="gym-card" *ngFor="let gym of gyms" (click)="goToGym(gym.id)">
+      <div class="img-wrap">
+        <img [src]="gym.images[0]" alt="Gym Image" />
+        <div class="tag">{{ gym.distanceKm }} km away</div>
+      </div>
+
+      <div class="details">
+        <h2 class="name">{{ gym.name }}</h2>
+        <p class="address">{{ gym.address }}</p>
+
+        <div class="meta-row">
+          <span class="price">₹{{ gym.price }} / day</span>
+          <span class="rating">⭐ {{ gym.rating }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOADING STATE -->
+  <div class="loading" *ngIf="state === 'loading'">
+    <div class="skeleton-card" *ngFor="let i of [1,2,3,4]"></div>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div class="empty" *ngIf="state === 'empty'">
+    <p>No gyms found. Try another location.</p>
+  </div>
+
+  <!-- ERROR STATE -->
+  <div class="error" *ngIf="state === 'error'">
+    <p>{{ errorMessage }}</p>
+    <button class="retry-btn" (click)="retry()">Retry</button>
+  </div>
+</div>

@@ -1,0 +1,195 @@
+/* GymFlex Home Page – Zomato/Airbnb Inspired Modern UI */
+
+.home-page {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 480px;
+  margin: auto;
+  background: #fafafa;
+  color: #222;
+  font-family: 'Inter', sans-serif;
+}
+
+/* HERO SECTION */
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #222;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-top: -6px;
+}
+
+/* SEARCH BOX */
+.search-box {
+  display: flex;
+  gap: 10px;
+  background: #fff;
+  padding: 12px;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  border: 1px solid #eee;
+}
+
+.search-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+.search-btn {
+  background: #ff4d4d;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.search-btn:hover {
+  background: #e84343;
+}
+
+/* GYM CARDS */
+.gym-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.gym-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+  border: 1px solid #eee;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.gym-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+/* IMAGE */
+.img-wrap {
+  position: relative;
+  width: 100%;
+  height: 170px;
+  overflow: hidden;
+}
+
+.img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tag {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 6px 10px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+/* DETAILS */
+.details {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+}
+
+.address {
+  font-size: 13px;
+  color: #666;
+}
+
+.meta-row {
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price {
+  font-weight: 700;
+  color: #ff4d4d;
+  font-size: 15px;
+}
+
+.rating {
+  font-size: 14px;
+  background: #f5f5f5;
+  padding: 6px 10px;
+  border-radius: 10px;
+  color: #333;
+}
+
+/* LOADING STATE */
+.loading {
+  display: grid;
+  gap: 18px;
+}
+
+.skeleton-card {
+  height: 200px;
+  background: #e5e5e5;
+  border-radius: 16px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* EMPTY */
+.empty {
+  text-align: center;
+  color: #666;
+  margin-top: 40px;
+}
+
+/* ERROR */
+.error {
+  text-align: center;
+  color: #d9534f;
+  margin-top: 40px;
+}
+
+.retry-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background: #ff4d4d;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}

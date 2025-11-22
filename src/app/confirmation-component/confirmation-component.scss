@@ -1,0 +1,174 @@
+/* Confirmation Page – GymFlex Premium Zomato/Airbnb Style */
+
+.confirm-page {
+  padding: 20px;
+  max-width: 480px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: #fafafa;
+  color: #222;
+  font-family: 'Inter', sans-serif;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  color: #ff4d4d;
+  font-weight: 500;
+}
+
+/* SUCCESS HEADER */
+.success-header {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.subtitle {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* QR CARD */
+.qr-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 18px;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+  border: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.qr-wrapper {
+  background: #fff;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid #ddd;
+}
+
+.qr-wrapper img {
+  width: 200px;
+  height: 200px;
+}
+
+.qr-info {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gym-name {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.gym-address {
+  font-size: 14px;
+  color: #666;
+}
+
+.visit-date,
+.visit-time {
+  font-size: 14px;
+}
+
+/* USER DETAILS CARD */
+.details-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+  border: 1px solid #eee;
+}
+
+.details-card h2 {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.price-row strong {
+  color: #ff4d4d;
+}
+
+/* HOW IT WORKS */
+.info-card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+  border: 1px solid #eee;
+}
+
+.info-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.info-card ul {
+  padding-left: 18px;
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
+
+/* BUTTON */
+.primary-btn {
+  background: #ff4d4d;
+  color: #fff;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 100%;
+}
+
+.primary-btn:hover {
+  background: #e84343;
+}
+
+/* EMPTY OR INVALID STATE */
+.center {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.secondary-btn {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 10px 16px;
+  border-radius: 12px;
+  color: #333;
+  cursor: pointer;
+}
+
+.error-text {
+  color: #d9534f;
+  margin-bottom: 10px;
+}

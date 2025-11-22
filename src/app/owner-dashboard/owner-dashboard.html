@@ -1,0 +1,78 @@
+<!-- Owner Dashboard – GymFlex (Mobile-first, clean Zomato-style) -->
+<div class="owner-dashboard">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="brand-mark">GF</div>
+    <div class="header-text">
+      <div class="title">Owner Dashboard</div>
+      <div class="sub">Manage your gyms & earnings</div>
+    </div>
+  </header>
+
+  <!-- QUICK STATS -->
+  <section class="stats-card">
+    <div class="stat-item">
+      <div class="value">{{ gyms.length || 0 }}</div>
+      <div class="label">Your gyms</div>
+    </div>
+    <div class="stat-item">
+      <div class="value">₹{{ totalEarnings }}</div>
+      <div class="label">Total earnings</div>
+    </div>
+    <div class="stat-item">
+      <div class="value">{{ pendingCount }}</div>
+      <div class="label">Pending approval</div>
+    </div>
+  </section>
+
+  <!-- YOUR GYMS LIST -->
+  <section class="card-section">
+    <div class="section-header">
+      <h2>Your Gyms</h2>
+      <button class="link-btn small" (click)="goToAddGym()">+ Add New</button>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="!gyms || gyms.length === 0" class="empty-box">
+      <p>You haven’t added any gyms yet.</p>
+      <button class="primary-btn mini" (click)="goToAddGym()">Add your first gym</button>
+    </div>
+
+    <!-- Gyms list -->
+    <div *ngFor="let g of gyms" class="gym-card" (click)="openGym(g.id)">
+      <img class="thumb" [src]="g.images?.[0] || placeholderImg" />
+
+      <div class="info">
+        <div class="name">{{ g.name }}</div>
+        <div class="address">{{ g.address }}</div>
+        <div class="status" [class.pending]="g.status === 'pending'" [class.approved]="g.status === 'approved'">
+          {{ g.status | titlecase }}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TODAY'S BOOKINGS -->
+  <section class="card-section">
+    <div class="section-header">
+      <h2>Today's Bookings</h2>
+      <button class="link-btn small" (click)="viewAllBookings()">View all</button>
+    </div>
+
+    <!-- Empty -->
+    <div *ngIf="todayBookings.length === 0" class="empty-box">
+      <p>No bookings today.</p>
+    </div>
+
+    <!-- Booking list -->
+    <div *ngFor="let b of todayBookings" class="booking-item">
+      <div>
+        <div class="cust-name">{{ b.customerName }}</div>
+        <div class="cust-phone">{{ b.customerPhone }}</div>
+      </div>
+      <div class="time">{{ b.date }} • {{ b.time }}</div>
+    </div>
+  </section>
+
+</div>

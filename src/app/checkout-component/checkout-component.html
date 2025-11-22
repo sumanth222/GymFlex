@@ -1,0 +1,109 @@
+<!-- Checkout Page – GymFlex Daily Pass Booking -->
+<div class="checkout-page" *ngIf="state === 'success' && gym">
+  <button class="back-btn" (click)="goBack()">← Back</button>
+
+  <!-- SUMMARY CARD -->
+  <section class="summary-card">
+    <h1 class="title">Confirm your day pass</h1>
+    <p class="subtitle">You're almost set to train at</p>
+
+    <div class="gym-summary">
+      <div class="gym-name">{{ gym.name }}</div>
+      <div class="gym-address">{{ gym.address }}</div>
+      <div class="price-row">
+        <span>Day pass</span>
+        <span class="price">₹{{ gym.price }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORM CARD -->
+  <section class="form-card">
+    <h2>Your details</h2>
+
+    <form (ngSubmit)="onSubmit()" #checkoutForm="ngForm">
+      <label>
+        Full name
+        <input
+          type="text"
+          name="name"
+          [(ngModel)]="form.name"
+          required
+          placeholder="Enter your full name"
+        />
+      </label>
+
+      <label>
+        Phone number
+        <input
+          type="tel"
+          name="phone"
+          [(ngModel)]="form.phone"
+          required
+          minlength="10"
+          maxlength="10"
+          placeholder="Your WhatsApp / contact number"
+        />
+      </label>
+
+      <label>
+        Date of visit
+        <input
+          type="date"
+          name="date"
+          [(ngModel)]="form.date"
+          required
+        />
+      </label>
+
+      <label>
+        Preferred time (optional)
+        <input
+          type="time"
+          name="time"
+          [(ngModel)]="form.time"
+        />
+      </label>
+
+      <div class="note">
+        <p>You'll receive a QR pass and confirmation on this number.</p>
+      </div>
+
+      <button
+        class="primary-btn full-width"
+        type="submit"
+        [disabled]="checkoutForm.invalid || isSubmitting"
+      >
+        {{ isSubmitting ? 'Processing…' : 'Pay & Get Pass' }}
+      </button>
+    </form>
+  </section>
+
+  <!-- PAYMENT INFO -->
+  <section class="info-card">
+    <h3>How this works</h3>
+    <ul>
+      <li>Pay securely online for a one-day pass.</li>
+      <li>You'll get a QR code on the confirmation screen.</li>
+      <li>Show the QR at the gym reception to enter.</li>
+    </ul>
+  </section>
+</div>
+
+<!-- LOADING STATE -->
+<div class="checkout-page" *ngIf="state === 'loading'">
+  <div class="skeleton-card"></div>
+  <div class="skeleton-card"></div>
+</div>
+
+<!-- ERROR STATE -->
+<div class="checkout-page center" *ngIf="state === 'error'">
+  <p class="error-text">{{ errorMessage || 'Could not load checkout details.' }}</p>
+  <button class="primary-btn" (click)="retry()">Retry</button>
+</div>
+
+<!-- EMPTY STATE -->
+<div class="checkout-page center" *ngIf="state === 'empty'">
+  <p>We couldn't find this gym.</p>
+  <button class="secondary-btn" (click)="goBack()">Back</button>
+</div>

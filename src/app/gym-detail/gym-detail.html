@@ -1,0 +1,85 @@
+<!-- Gym Detail Page with Custom Carousel (No Libraries) -->
+<div class="gym-detail-page" *ngIf="state === 'success' && gym">
+
+  <button class="back-btn" (click)="goBack()">← Back</button>
+
+  <!-- HERO IMAGE CAROUSEL -->
+  <div class="carousel"
+       (touchstart)="onTouchStart($event)"
+       (touchmove)="onTouchMove($event)"
+       (touchend)="onTouchEnd()">
+
+    <!-- IMAGE -->
+    <img class="carousel-img" [src]="currentImage" alt="Gym image" />
+
+    <!-- LEFT ARROW -->
+    <button class="carousel-arrow left" (click)="prevImage()">❮</button>
+
+    <!-- RIGHT ARROW -->
+    <button class="carousel-arrow right" (click)="nextImage()">❯</button>
+
+    <!-- DOTS -->
+    <div class="carousel-dots" *ngIf="gym.images.length > 1">
+      <span class="dot"
+            *ngFor="let img of gym.images; let i = index"
+            [class.active]="i === currentImageIndex"
+            (click)="goToImage(i)"></span>
+    </div>
+  </div>
+
+  <!-- DETAILS CARD -->
+  <section class="hero-card">
+    <h1 class="name">{{ gym.name }}</h1>
+    <p class="address">{{ gym.address }}</p>
+
+    <div class="meta-row">
+      <div class="rating">⭐ {{ gym.rating }} <span class="rating-count">({{ gym.ratingCount }})</span></div>
+      <div class="timings">{{ gym.openingTime }} - {{ gym.closingTime }}</div>
+    </div>
+
+    <div class="price-row">₹{{ gym.price }} / day</div>
+
+    <button class="primary-btn" (click)="goToCheckout()">Get Day Pass</button>
+  </section>
+
+  <!-- FACILITIES -->
+  <section class="card-section" *ngIf="gym.facilities?.length">
+    <h2>Facilities</h2>
+    <div class="chip-row">
+      <span class="chip" *ngFor="let f of gym.facilities">{{ f }}</span>
+    </div>
+  </section>
+
+  <!-- EQUIPMENT -->
+  <section class="card-section" *ngIf="gym.equipment?.length">
+    <h2>Equipment</h2>
+    <ul class="equipment-list">
+      <li *ngFor="let e of gym.equipment">{{ e }}</li>
+    </ul>
+  </section>
+
+  <!-- LOCATION -->
+  <section class="card-section">
+    <h2>Location</h2>
+    <p class="address">{{ gym.address }}</p>
+    <div class="map-placeholder">Map coming soon</div>
+  </section>
+</div>
+
+<!-- LOADING STATE -->
+<div class="gym-detail-page" *ngIf="state === 'loading'">
+  <div class="skeleton-hero"></div>
+  <div class="skeleton-card" *ngFor="let i of [1,2,3]"></div>
+</div>
+
+<!-- ERROR STATE -->
+<div class="gym-detail-page center" *ngIf="state === 'error'">
+  <p class="error-text">{{ errorMessage }}</p>
+  <button class="primary-btn" (click)="retry()">Retry</button>
+</div>
+
+<!-- EMPTY STATE -->
+<div class="gym-detail-page center" *ngIf="state === 'empty'">
+  <p>Gym not found.</p>
+  <button class="secondary-btn" (click)="goBack()">Back</button>
+</div>

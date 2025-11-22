@@ -1,0 +1,203 @@
+/* Checkout Page – GymFlex Clean Zomato/Airbnb Style */
+
+.checkout-page {
+  padding: 20px;
+  max-width: 480px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: #fafafa;
+  color: #222;
+  font-family: 'Inter', sans-serif;
+}
+
+/* BACK BUTTON */
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  color: #ff4d4d;
+  font-weight: 500;
+}
+
+/* SUMMARY CARD */
+.summary-card {
+  background: #fff;
+  padding: 18px;
+  border-radius: 16px;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+  border: 1px solid #eee;
+}
+
+.title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #777;
+}
+
+.gym-summary {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.gym-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #222;
+}
+
+.gym-address {
+  font-size: 14px;
+  color: #555;
+}
+
+.price-row {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+}
+
+.price {
+  font-weight: 700;
+  color: #ff4d4d;
+}
+
+/* FORM CARD */
+.form-card {
+  background: #fff;
+  padding: 18px;
+  border-radius: 16px;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+  border: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-card h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  gap: 6px;
+  color: #333;
+}
+
+input {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  font-size: 15px;
+  color: #333;
+  outline: none;
+  transition: border 0.2s;
+}
+
+input:focus {
+  border-color: #ff4d4d;
+}
+
+.note {
+  font-size: 13px;
+  color: #555;
+  margin-top: -4px;
+}
+
+/* BUTTON */
+.primary-btn {
+  background: #ff4d4d;
+  color: #fff;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.primary-btn:hover {
+  background: #e84343;
+}
+
+.primary-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* INFO CARD */
+.info-card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+  border: 1px solid #eee;
+}
+
+.info-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.info-card ul {
+  padding-left: 20px;
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
+
+/* STATES */
+.center {
+  text-align: center;
+}
+
+.error-text {
+  color: #d9534f;
+  margin-bottom: 10px;
+}
+
+/* LOADING */
+.skeleton-card {
+  background: #e5e5e5;
+  height: 150px;
+  border-radius: 16px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.secondary-btn {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 10px 16px;
+  border-radius: 12px;
+  color: #333;
+  cursor: pointer;
+}

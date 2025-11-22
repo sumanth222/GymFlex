@@ -1,0 +1,55 @@
+<!-- Confirmation Page – GymFlex Daily Pass QR -->
+<div class="confirm-page" *ngIf="gym && form">
+  <button class="back-btn" (click)="goHome()">← Home</button>
+
+  <!-- SUCCESS HEADER -->
+  <section class="success-header">
+    <h1 class="title">You're all set! 🎉</h1>
+    <p class="subtitle">Show this QR at the gym reception to enter.</p>
+  </section>
+
+  <!-- QR CARD -->
+  <section class="qr-card">
+    <div class="qr-wrapper">
+      <!-- QR IMAGE (temporary placeholder) -->
+      <img 
+        src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=GymFlex%20Pass" 
+        alt="QR Code"
+      />
+    </div>
+
+    <div class="qr-info">
+      <div class="gym-name">{{ gym.name }}</div>
+      <div class="gym-address">{{ gym.address }}</div>
+      <div class="visit-date">Visit date: <strong>{{ form.date }}</strong></div>
+      <div class="visit-time" *ngIf="form.time">Preferred time: <strong>{{ form.time }}</strong></div>
+    </div>
+  </section>
+
+  <!-- USER DETAILS CARD -->
+  <section class="details-card">
+    <h2>Your details</h2>
+    <div class="row"><span>Name:</span> <strong>{{ form.name }}</strong></div>
+    <div class="row"><span>Phone:</span> <strong>{{ form.phone }}</strong></div>
+    <div class="row price-row"><span>Amount paid:</span> <strong>₹{{ gym.price }}</strong></div>
+  </section>
+
+  <!-- HOW IT WORKS CARD -->
+  <section class="info-card">
+    <h3>What to do now</h3>
+    <ul>
+      <li>Go to the gym on your selected date.</li>
+      <li>Show this QR code at reception.</li>
+      <li>You're good to start training!</li>
+    </ul>
+  </section>
+
+  <!-- BUTTON -->
+  <button class="primary-btn" (click)="goHome()">Done</button>
+</div>
+
+<!-- If someone lands here without data -->
+<div class="confirm-page center" *ngIf="!gym || !form">
+  <p>Session expired. Please book again.</p>
+  <button class="primary-btn" (click)="goHome()">Back to Home</button>
+</div>

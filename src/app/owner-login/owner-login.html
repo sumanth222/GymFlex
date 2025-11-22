@@ -1,0 +1,90 @@
+<!-- Owner Login – GymFlex (Phone OTP, Clean Zomato-style) -->
+<div class="owner-login-page">
+  <!-- Brand Header -->
+  <header class="header">
+    <div class="brand-mark">GF</div>
+    <div class="brand-text">
+      <div class="brand-name">GymFlex Owners</div>
+      <div class="brand-sub">Manage your gym, daily passes & payouts</div>
+    </div>
+  </header>
+
+<div id="recaptcha-container" class="recaptcha-box"></div>
+
+  <!-- Step 1: Enter Phone -->
+  <section *ngIf="step === 'phone'" class="card">
+    <h1 class="title">Login to your owner account</h1>
+    <p class="subtitle">Enter your WhatsApp number to receive a one-time OTP.</p>
+
+    <form (ngSubmit)="sendOtp()" #phoneForm="ngForm" class="form">
+      <label class="field">
+        Phone number
+        <div class="phone-input-wrap">
+          <span class="prefix">+91</span>
+          <input
+            type="tel"
+            name="phone"
+            [(ngModel)]="phone"
+            required
+            minlength="10"
+            maxlength="10"
+            placeholder="10-digit mobile number"
+          />
+        </div>
+      </label>
+
+
+      <button
+        type="submit"
+        class="primary-btn full-width"
+        [disabled]="phoneForm.invalid || isSending"
+      >
+        {{ isSending ? 'Sending OTP…' : 'Send OTP' }}
+      </button>
+
+      <p class="helper">We’ll never spam or auto-call this number.</p>
+    </form>
+  </section>
+
+  <!-- Step 2: Enter OTP -->
+  <section *ngIf="step === 'otp'" class="card">
+    <h1 class="title">Enter OTP</h1>
+    <p class="subtitle">We’ve sent a 6-digit OTP to +91 {{ phone }}.</p>
+
+    <form (ngSubmit)="verifyOtp()" #otpForm="ngForm" class="form">
+      <label class="field">
+        6-digit OTP
+        <input
+          type="text"
+          name="otp"
+          [(ngModel)]="otp"
+          required
+          minlength="6"
+          maxlength="6"
+          placeholder="••••••"
+        />
+      </label>
+
+      <button
+        type="submit"
+        class="primary-btn full-width"
+        [disabled]="otpForm.invalid || isVerifying"
+      >
+        {{ isVerifying ? 'Verifying…' : 'Verify & Continue' }}
+      </button>
+
+      <button type="button" class="link-btn">
+        Change number
+      </button>
+
+      <button type="button" class="link-btn" (click)="resendOtp()" [disabled]="isSending">
+        Resend OTP
+      </button>
+    </form>
+  </section>
+
+  <!-- Error message -->
+  <div *ngIf="error" class="error-banner">
+    {{ error }}
+  </div>
+</div>
