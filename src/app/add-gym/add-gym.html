@@ -1,0 +1,74 @@
+<div class="add-gym-container">
+
+  <header class="topbar">
+    <button class="back-btn" (click)="goBack()">←</button>
+    <h2>Add Your Gym</h2>
+  </header>
+
+  <form class="form" (ngSubmit)="submitGym()" #f="ngForm">
+
+    <label class="label">Gym Name</label>
+    <input class="input" type="text" [(ngModel)]="gym.name" name="name" required />
+
+    <label class="label">Address</label>
+    <textarea class="textarea" [(ngModel)]="gym.address" name="address" required></textarea>
+
+    <label class="label">City</label>
+    <input class="input" type="text" [(ngModel)]="gym.city" name="city" required />
+
+    <div class="row">
+      <div class="col">
+        <label class="label">Open</label>
+        <input class="input" type="time" [(ngModel)]="gym.openingTime" name="opening" required />
+      </div>
+
+      <div class="col">
+        <label class="label">Close</label>
+        <input class="input" type="time" [(ngModel)]="gym.closingTime" name="closing" required />
+      </div>
+    </div>
+
+    <label class="label">Day Pass Price (₹)</label>
+    <input class="input" type="number" [(ngModel)]="gym.price" name="price" required min="50" />
+
+    <!-- Facilities -->
+    <label class="label">Facilities</label>
+    <div class="chips">
+      <button
+        *ngFor="let f of facilities"
+        type="button"
+        class="chip"
+        [class.active]="gym.facilities.includes(f)"
+        (click)="toggleFacility(f)">
+        {{ f }}
+      </button>
+    </div>
+
+    <!-- Equipment -->
+    <label class="label">Equipment</label>
+    <div class="chips">
+      <button
+        *ngFor="let e of equipmentList"
+        type="button"
+        class="chip"
+        [class.active]="gym.equipment.includes(e)"
+        (click)="toggleEquipment(e)">
+        {{ e }}
+      </button>
+    </div>
+
+    <!-- Image Upload -->
+    <label class="label">Upload Images (1–6)</label>
+    <input type="file" multiple accept="image/*" (change)="onImageSelect($event)" />
+
+    <div class="image-preview">
+      <img *ngFor="let img of previewImages" [src]="img" />
+    </div>
+
+    <button class="submit-btn" [disabled]="isSubmitting || !f.valid">
+      {{ isSubmitting ? 'Submitting...' : 'Submit Gym' }}
+    </button>
+
+  </form>
+
+</div>

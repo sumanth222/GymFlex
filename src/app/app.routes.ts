@@ -6,6 +6,7 @@ import { CheckoutComponent } from './checkout-component/checkout-component';
 import { ConfirmationComponent } from './confirmation-component/confirmation-component';
 import { OwnerLoginComponent } from './owner-login/owner-login';
 import { OwnerDashboardComponent } from './owner-dashboard/owner-dashboard';
+import { AddGymComponent } from './add-gym/add-gym';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent},
@@ -15,6 +16,7 @@ export const routes: Routes = [
     {path: 'confirmation', component: ConfirmationComponent},
 
     { path: 'owner/login', component: OwnerLoginComponent },
+    { path: 'owner/add-gym', component: AddGymComponent },
     { path: 'owner', component: OwnerDashboardComponent },
 
     // redirect to owner/login if owner tries accessing blank
