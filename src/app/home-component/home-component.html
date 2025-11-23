@@ -7,10 +7,39 @@
 
     <!-- SEARCH BAR -->
     <div class="search-box">
-      <input type="text" placeholder="Search by area, landmark or gym name" />
+      <input 
+        type="text" 
+        placeholder="Search by area, landmark, or gym name"
+        [(ngModel)]="searchTerm"
+        (input)="applyFilters()"
+        />
       <button class="search-btn">Search</button>
     </div>
   </section>
+
+  <!-- CITY FILTERS -->
+    <div class="city-filter" *ngIf="cities.length > 0">
+        <div 
+            class="city-chip" 
+            *ngFor="let c of cities" 
+            [class.active]="selectedCity === c"
+            (click)="selectCity(c)"
+        >
+            {{ c }}
+        </div>
+    </div>
+
+    <!-- CATEGORY FILTERS -->
+    <div class="category-filter">
+    <div 
+        class="cat-chip" 
+        *ngFor="let cat of categories" 
+        [class.selected]="selectedCategory === cat"
+        (click)="selectCategory(cat)"
+    >
+        {{ cat }}
+    </div>
+    </div>
 
   <!-- GYM LIST -->
   <section class="gym-list" *ngIf="state === 'success'">

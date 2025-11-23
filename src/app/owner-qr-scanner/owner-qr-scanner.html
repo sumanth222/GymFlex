@@ -1,0 +1,98 @@
+<!-- owner-qr-scanner.component.html -->
+<div class="scan-page">
+  <!-- Top bar -->
+  <div class="top-bar">
+    <button class="back-btn" (click)="goBack()">←</button>
+    <h1>Scan Day Pass</h1>
+  </div>
+
+  <!-- Camera + Scan Area -->
+  <section class="camera-section">
+    <div class="video-wrap" [class.inactive]="!scanning">
+      <video #video playsinline></video>
+      <div class="scan-frame" *ngIf="scanning"></div>
+      <div class="video-overlay" *ngIf="!scanning">
+        <p>Tap "Start Scan" to use camera</p>
+      </div>
+    </div>
+
+    <button class="primary-btn" *ngIf="!scanning" (click)="startScanning()">
+      Start Scan
+    </button>
+
+    <button class="secondary-btn" *ngIf="scanning" (click)="stopScanning()">
+      Stop Scan
+    </button>
+
+    <p class="scan-error" *ngIf="scanError">{{ scanError }}</p>
+  </section>
+
+  <!-- Manual Entry -->
+  <section class="manual-section">
+    <h2>Or enter Booking ID manually</h2>
+    <div class="manual-row">
+      <input
+        type="text"
+        placeholder="Enter Booking ID from user"
+        [(ngModel)]="manualBookingId"
+      />
+      <button class="secondary-btn" (click)="submitManual()">Verify</button>
+    </div>
+  </section>
+
+  <!-- Result Block -->
+  <section class="result-section" *ngIf="verifyState !== 'idle'">
+    <div
+      class="status-pill"
+      [ngClass]="{
+        success: verifyState === 'success',
+        error: verifyState === 'error',
+        loading: verifyState === 'loading'
+      }"
+    >
+      <span *ngIf="verifyState === 'loading'">Checking...</span>
+      <span *ngIf="verifyState === 'success'">Valid Pass</span>
+      <span *ngIf="verifyState === 'error'">Invalid Pass</span>
+    </div>
+
+    <p class="status-message">{{ verifyMessage }}</p>
+
+    <!-- Booking Details on success -->
+    <div class="booking-card" *ngIf="booking && verifyState === 'success'">
+      <h3>{{ booking.gymName }}</h3>
+
+      <div class="row">
+        <span>Name</span>
+        <strong>{{ booking.userName }}</strong>
+      </div>
+
+      <div class="row">
+        <span>Phone</span>
+        <strong>{{ booking.phone }}</strong>
+      </div>
+
+      <div class="row">
+        <span>Date</span>
+        <strong>{{ booking.date }}</strong>
+      </div>
+
+      <div class="row">
+        <span>Amount</span>
+        <strong>₹{{ booking.amount }}</strong>
+      </div>
+
+      <div class="row">
+        <span>Booking ID</span>
+        <strong>{{ booking.id }}</strong>
+      </div>
+
+      <button
+        class="primary-btn full"
+        (click)="markAsUsed()"
+        [disabled]="booking.status === 'used'"
+      >
+        {{ booking.status === 'used' ? 'Already Marked as Used' : 'Mark as Used' }}
+      </button>
+    </div>
+  </section>
+</div>

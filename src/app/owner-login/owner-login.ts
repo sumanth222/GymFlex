@@ -106,6 +106,7 @@ export class OwnerLoginComponent implements AfterViewInit {
 
     try {
       const cred = await this.confirmationResult.confirm(this.otp);
+      localStorage.setItem("owner_uid", cred.user.uid);
       await this.upsertOwner(cred.user);
       this.router.navigate(['/owner']);
 

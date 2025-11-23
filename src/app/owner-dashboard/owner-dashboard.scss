@@ -1,211 +1,217 @@
-/* Owner Dashboard – GymFlex Mobile-first Zomato/Airbnb style */
-
 .owner-dashboard {
-  padding: 20px;
-  max-width: 480px;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  background: #fafafa;
-  font-family: 'Inter', sans-serif;
-  color: #222;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 16px 16px 100px;
+  color: black;
 }
 
-/* HEADER */
-.header {
+/* TOP BAR */
+.top-bar {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  margin-bottom: -10px;
+
+  h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #111;
+  }
 }
 
-.brand-mark {
-  background: #ff4d4d;
-  color: #fff;
-  width: 42px;
-  height: 42px;
+.logout-btn {
+  border: none;
+  background: #f4f4f4;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  margin-top: 60px;
+
+  img {
+    width: 140px;
+    opacity: 0.8;
+  }
+
+  h2 {
+    font-size: 20px;
+    margin-top: 16px;
+    font-weight: 700;
+  }
+
+  p {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+}
+
+.primary-btn {
+  padding: 12px 18px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* LOADING */
+.loading {
   display: flex;
   justify-content: center;
-  align-items: center;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 18px;
+  margin-top: 40px;
 }
 
-.header-text .title {
-  font-size: 20px;
-  font-weight: 700;
+.loader {
+  width: 30px;
+  height: 30px;
+  border: 4px solid #ddd;
+  border-top-color: black;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
 }
 
-.header-text .sub {
-  font-size: 14px;
-  color: #666;
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* QUICK STATS */
-.stats-card {
-  display: flex;
-  justify-content: space-between;
-  background: #fff;
-  padding: 16px;
-  border-radius: 16px;
-  box-shadow: 0 5px 18px rgba(0,0,0,0.06);
-  border: 1px solid #eee;
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-item .value {
-  font-size: 20px;
-  font-weight: 700;
-}
-
-.stat-item .label {
-  font-size: 12px;
-  color: #666;
-}
-
-/* SECTIONS */
-.card-section {
-  background: #fff;
-  padding: 16px;
-  border-radius: 16px;
-  box-shadow: 0 5px 18px rgba(0,0,0,0.06);
-  border: 1px solid #eee;
+/* GYM LIST */
+.gym-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 18px;
 }
 
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.section-header h2 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.link-btn.small {
-  font-size: 14px;
-  color: #ff4d4d;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
-
-/* EMPTY BOX */
-.empty-box {
-  background: #f5f5f5;
-  padding: 20px;
-  border-radius: 12px;
-  text-align: center;
-  color: #666;
-  font-size: 14px;
-  border: 1px solid #e0e0e0;
-}
-
-.primary-btn.mini {
-  margin-top: 10px;
-  padding: 8px 16px;
-  font-size: 14px;
-  background: #ff4d4d;
-  border: none;
-  border-radius: 12px;
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-/* GYM CARD */
 .gym-card {
   display: flex;
-  gap: 12px;
-  background: #fafafa;
-  padding: 12px;
+  gap: 14px;
+  background: #fff;
+  padding: 14px;
   border-radius: 14px;
-  border: 1px solid #eee;
-  cursor: pointer;
-  transition: background 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
-.gym-card:hover {
-  background: #f3f3f3;
-}
-
-.thumb {
-  width: 80px;
-  height: 64px;
+/* IMAGE */
+.gym-img {
+  width: 95px;
+  height: 95px;
+  border-radius: 12px;
   object-fit: cover;
-  border-radius: 10px;
-  background: #ddd;
 }
 
-.info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+/* GYM INFO */
+.gym-info {
+  flex: 1;
 }
 
-.info .name {
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.info .address {
-  font-size: 13px;
-  color: #666;
-}
-
-.status {
-  font-size: 13px;
-  padding: 4px 10px;
-  border-radius: 8px;
-  width: fit-content;
-  font-weight: 600;
-}
-
-.status.pending {
-  background: #fff4cc;
-  color: #b88600;
-  border: 1px solid #f0d87a;
-}
-
-.status.approved {
-  background: #e8ffe6;
-  color: #1e8a2a;
-  border: 1px solid #b5e9b3;
-}
-
-/* BOOKINGS */
-.booking-item {
+.header-row {
   display: flex;
   justify-content: space-between;
-  border: 1px solid #eee;
-  padding: 12px;
-  border-radius: 12px;
-  background: #fafafa;
+  align-items: center;
+
+  h2 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+  }
 }
 
-.cust-name {
-  font-size: 15px;
+/* STATUS */
+.status {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
   font-weight: 600;
+  color: white;
+
+  &.pending {
+    background: #e67e22;
+  }
+
+  &.approved {
+    background: #27ae60;
+  }
 }
 
-.cust-phone {
+.address {
   font-size: 13px;
   color: #666;
+  margin: 4px 0 6px;
 }
 
-.time {
-  font-size: 13px;
-  color: #444;
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+
+  .price {
+    font-weight: 700;
+  }
+}
+
+/* BUTTON ROW */
+.btn-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+
+  .secondary-btn {
+    flex: 1;
+    padding: 8px;
+    background: #f2f2f2;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+  }
+}
+
+/* Floating Add Button */
+.fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 55px;
+  height: 55px;
+  background: black;
+  color: white;
+  border-radius: 50%;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.earnings-summary {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+  overflow-x: auto;
+}
+
+.summary-card {
+  flex: 1;
+  min-width: 140px;
+  padding: 16px;
+  background: #fafafa;
+  border-radius: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.summary-card h3 {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 6px;
   font-weight: 500;
+}
+
+.summary-card .value {
+  font-size: 20px;
+  font-weight: 700;
 }

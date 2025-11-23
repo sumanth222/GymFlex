@@ -30,7 +30,7 @@ export class AddGymComponent {
   ];
 
   equipmentList = [
-    "Treadmill", "Dumbbells", "Bench Press", "Squat Rack", "Cable Machine", "Elliptical"
+    "Treadmill", "Dumbbells", "Bench Press", "Squat Rack", "Cable Machine", "Elliptical", "Stair master"
   ];
 
   gym: any = {

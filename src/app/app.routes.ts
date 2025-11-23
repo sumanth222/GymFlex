@@ -7,6 +7,8 @@ import { ConfirmationComponent } from './confirmation-component/confirmation-com
 import { OwnerLoginComponent } from './owner-login/owner-login';
 import { OwnerDashboardComponent } from './owner-dashboard/owner-dashboard';
 import { AddGymComponent } from './add-gym/add-gym';
+import { EditGymComponent } from './edit-gym/edit-gym';
+import { OwnerQrScannerComponent } from './owner-qr-scanner/owner-qr-scanner';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -15,8 +17,12 @@ export const routes: Routes = [
   { path: 'checkout/:id', component: CheckoutComponent },
   { path: 'confirmation', component: ConfirmationComponent },
 
+  // OWNER ROUTES - PUT SPECIFIC FIRST
   { path: 'owner/login', component: OwnerLoginComponent },
   { path: 'owner/add-gym', component: AddGymComponent },
+  { path: 'owner/edit-gym/:id', component: EditGymComponent},
+  { path: 'owner/scan/:gymId', component: OwnerQrScannerComponent},
+
+  // MUST be last among owner routes
   { path: 'owner', component: OwnerDashboardComponent },
 ];
-

@@ -1,78 +1,83 @@
-<!-- Owner Dashboard – GymFlex (Mobile-first, clean Zomato-style) -->
 <div class="owner-dashboard">
 
-  <!-- HEADER -->
-  <header class="header">
-    <div class="brand-mark">GF</div>
-    <div class="header-text">
-      <div class="title">Owner Dashboard</div>
-      <div class="sub">Manage your gyms & earnings</div>
-    </div>
-  </header>
-
-  <!-- QUICK STATS -->
-  <section class="stats-card">
-    <div class="stat-item">
-      <div class="value">{{ gyms.length || 0 }}</div>
-      <div class="label">Your gyms</div>
-    </div>
-    <div class="stat-item">
-      <div class="value">₹{{ totalEarnings }}</div>
-      <div class="label">Total earnings</div>
-    </div>
-    <div class="stat-item">
-      <div class="value">{{ pendingCount }}</div>
-      <div class="label">Pending approval</div>
-    </div>
-  </section>
-
-  <!-- YOUR GYMS LIST -->
-  <section class="card-section">
-    <div class="section-header">
-      <h2>Your Gyms</h2>
-      <button class="link-btn small" (click)="goToAddGym()">+ Add New</button>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <h1>Your Gyms</h1>
+    <button class="logout-btn" (click)="logout()">Logout</button>
+  </div>
+  
+    <!-- Earnings Summary -->
+    <div *ngIf="!loading" class="earnings-summary">
+    <div class="summary-card">
+        <h3>Total Earnings</h3>
+        <p class="value">₹{{ totalEarnings }}</p>
     </div>
 
-    <!-- Empty state -->
-    <div *ngIf="!gyms || gyms.length === 0" class="empty-box">
-      <p>You haven’t added any gyms yet.</p>
-      <button class="primary-btn mini" (click)="goToAddGym()">Add your first gym</button>
+    <div class="summary-card">
+        <h3>Total Bookings</h3>
+        <p class="value">{{ totalBookings }}</p>
     </div>
 
-    <!-- Gyms list -->
-    <div *ngFor="let g of gyms" class="gym-card" (click)="openGym(g.id)">
-      <img class="thumb" [src]="g.images?.[0] || placeholderImg" />
+    <div class="summary-card">
+        <h3>Today</h3>
+        <p class="value">₹{{ todayEarnings }}</p>
+    </div>
+    </div>
 
-      <div class="info">
-        <div class="name">{{ g.name }}</div>
-        <div class="address">{{ g.address }}</div>
-        <div class="status" [class.pending]="g.status === 'pending'" [class.approved]="g.status === 'approved'">
-          {{ g.status | titlecase }}
+  <!-- No gyms -->
+  <div *ngIf="!loading && gyms.length === 0" class="empty-state">
+    <img src="https://cdn-icons-png.flaticon.com/512/4076/4076409.png" />
+    <h2>No Gyms Added Yet</h2>
+    <p>Add your first gym to start accepting day-pass customers.</p>
+
+    <button class="primary-btn" (click)="goAddGym()">
+      + Add Your First Gym
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading">
+    <div class="loader"></div>
+  </div>
+
+  <!-- Gym List -->
+  <div *ngIf="!loading && gyms.length > 0" class="gym-list">
+
+    <div class="gym-card" *ngFor="let gym of gyms">
+
+      <img class="gym-img" [src]="gym.images?.[0] || placeholderImg" />
+
+      <div class="gym-info">
+        <div class="header-row">
+          <h2>{{ gym.name }}</h2>
+
+          <span class="status"
+                [class.pending]="gym.status === 'pending'"
+                [class.approved]="gym.status === 'approved'">
+            {{ gym.status | titlecase }}
+          </span>
         </div>
+
+        <p class="address">{{ gym.address }}</p>
+
+        <div class="meta-row">
+          <span class="price">₹{{ gym.price }}</span>
+          <span class="timings">{{ gym.openingTime }} - {{ gym.closingTime }}</span>
+        </div>
+
+        <div class="btn-row">
+          <button class="secondary-btn" (click)="editGym(gym.id)">Edit</button>
+          <button class="secondary-btn" (click)="viewGym(gym.id)">View</button>
+          <button class="secondary-btn" (click)="viewBookings(gym.id)">Bookings</button>
+        </div>
+        <button class="secondary-btn" (click)="scan(gym.id)">Scan QR</button>
       </div>
-    </div>
-  </section>
 
-  <!-- TODAY'S BOOKINGS -->
-  <section class="card-section">
-    <div class="section-header">
-      <h2>Today's Bookings</h2>
-      <button class="link-btn small" (click)="viewAllBookings()">View all</button>
     </div>
 
-    <!-- Empty -->
-    <div *ngIf="todayBookings.length === 0" class="empty-box">
-      <p>No bookings today.</p>
-    </div>
+  </div>
 
-    <!-- Booking list -->
-    <div *ngFor="let b of todayBookings" class="booking-item">
-      <div>
-        <div class="cust-name">{{ b.customerName }}</div>
-        <div class="cust-phone">{{ b.customerPhone }}</div>
-      </div>
-      <div class="time">{{ b.date }} • {{ b.time }}</div>
-    </div>
-  </section>
+  <!-- Floating Add Gym Button -->
+  <button class="fab" (click)="goAddGym()">+</button>
 
 </div>

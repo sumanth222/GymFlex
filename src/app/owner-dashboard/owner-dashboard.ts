@@ -1,100 +1,124 @@
-// Owner Dashboard Component – GymFlex (Mobile-first)
-// Loads gyms owned by logged-in owner, today's bookings & earnings
-
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
-import { Auth, onAuthStateChanged, User } from '@angular/fire/auth';
-import { Firestore, collection, collectionGroup, doc, getDocs, query, where } from '@angular/fire/firestore';
+import { Firestore, collection, query, where, getDocs } from '@angular/fire/firestore';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-owner-dashboard',
   standalone: true,
-  imports: [CommonModule],
   templateUrl: './owner-dashboard.html',
   styleUrls: ['./owner-dashboard.scss'],
-  encapsulation: ViewEncapsulation.None
+  imports: [CommonModule]
 })
 export class OwnerDashboardComponent implements OnInit {
-  owner: User | null = null;
 
   gyms: any[] = [];
-  todayBookings: any[] = [];
-
+  ownerId: string | null = null;
+  loading = true;
   totalEarnings = 0;
-  pendingCount = 0;
+  totalBookings = 0;
+  todayEarnings = 0;
 
-  // Placeholder thumbnail
-  placeholderImg = 'https://via.placeholder.com/120x80?text=Gym';
+
+  placeholderImg =
+    "https://images.unsplash.com/photo-1579758629938-03607ccdbaba?q=80&w=600";
 
   constructor(
-    private auth: Auth,
     private firestore: Firestore,
-    private router: Router
+    private router: Router,
+    private ngZone: NgZone
   ) {}
 
-  ngOnInit(): void {
-    onAuthStateChanged(this.auth, (user) => {
-      if (!user) {
-        this.router.navigate(['/owner/login']);
-        return;
-      }
+  ngOnInit() {
+    this.ownerId = localStorage.getItem("owner_uid");
 
-      this.owner = user;
-      this.loadGyms();
-      this.loadTodayBookings();
+    if (!this.ownerId) {
+      this.router.navigate(['/owner/login']);
+      return;
+    }
+
+    this.loadGyms();
+  }
+
+async loadGyms() {
+  this.loading = true;
+  this.gyms = [];
+
+  console.log("🔍 ownerId:", this.ownerId);
+
+  try {
+    const ref = collection(this.firestore, 'gyms');
+    const q = query(ref, where("ownerId", "==", this.ownerId));
+
+    console.log("⏳ Running Firestore query...");
+
+    const snapshot = await getDocs(q);
+
+    console.log("📄 Query complete. Empty?", snapshot.empty);
+    console.log("📄 Docs found:", snapshot.size);
+
+    snapshot.forEach(doc => {
+      console.log("➡ Gym:", doc.data());
+      this.gyms.push({ id: doc.id, ...doc.data() });
+    });
+
+  } catch (err) {
+    console.error("🔥 Firestore ERROR:", err);
+  }finally {
+    this.ngZone.run(() => {
+      this.loading = false;
     });
   }
 
-  // ───────────────────────────────────────────
-  // LOAD OWNER GYMS
-  // ───────────────────────────────────────────
-  async loadGyms(): Promise<void> {
-    if (!this.owner) return;
+  console.log("🎉 Final gyms array:", this.gyms);
+  await this.calculateEarnings();
+}
 
-    const gymsRef = collection(this.firestore, 'gyms');
-    const q = query(gymsRef, where('ownerId', '==', this.owner.uid));
-    const snap = await getDocs(q);
+async calculateEarnings() {
+  const bookingsRef = collection(this.firestore, 'bookings');
 
-    this.gyms = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  // Fetch all bookings for ALL owner gyms
+  const q = query(bookingsRef, where("ownerId", "==", this.ownerId));
+  const snapshot = await getDocs(q);
 
-    this.pendingCount = this.gyms.filter(g => g.status === 'pending').length;
+  let today = new Date().toISOString().split("T")[0];
 
-    // Calculate earnings
-    this.totalEarnings = this.gyms.reduce((sum, g) => sum + (g.earnings || 0), 0);
-  }
+  snapshot.forEach(doc => {
+    const data: any = doc.data();
 
-  // ───────────────────────────────────────────
-  // LOAD TODAY'S BOOKINGS (from subcollection)
-  // ───────────────────────────────────────────
-  async loadTodayBookings(): Promise<void> {
-    if (!this.owner) return;
+    this.totalBookings++;
 
-    const today = new Date();
-    const dateStr = today.toISOString().split('T')[0];
+    this.totalEarnings += Number(data.amount);
 
-    // Query bookings belonging to all gyms of this owner
-    const bookingsRef = collectionGroup(this.firestore, 'bookings');
-    const q = query(bookingsRef, where('ownerId', '==', this.owner.uid), where('date', '==', dateStr));
+    if (data.date === today) {
+      this.todayEarnings += Number(data.amount);
+    }
+  });
+}
+  // ---- Button Actions ----
 
-    const snap = await getDocs(q);
-
-    this.todayBookings = snap.docs.map(d => d.data());
-  }
-
-  // ───────────────────────────────────────────
-  // NAVIGATION
-  // ───────────────────────────────────────────
-  goToAddGym(): void {
+  goAddGym() {
     this.router.navigate(['/owner/add-gym']);
   }
 
-  openGym(id: string): void {
+  editGym(id: string) {
+    this.router.navigate(['/owner/edit-gym', id]);
+  }
+
+  viewGym(id: string) {
     this.router.navigate(['/owner/gym', id]);
   }
 
-  viewAllBookings(): void {
-    this.router.navigate(['/owner/bookings']);
+  viewBookings(id: string) {
+    this.router.navigate(['/owner/gym-bookings', id]);
+  }
+
+  scan(gymId: string) {
+    this.router.navigate(['/owner/scan', gymId]);
+  }
+
+  logout() {
+    localStorage.removeItem('owner_uid');
+    this.router.navigate(['/owner/login']);
   }
 }

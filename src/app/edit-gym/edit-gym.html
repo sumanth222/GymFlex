@@ -1,0 +1,76 @@
+<div class="edit-gym-page">
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loader-wrapper">
+    <div class="loader"></div>
+  </div>
+  
+
+  <div *ngIf="!loading" class="form-container">
+
+    <h1>Edit Gym</h1>
+
+    <div class="top-bar">
+      <button class="back-btn" (click)="goBack()">←</button>
+    </div>
+
+    <!-- Gym Name -->
+    <label>Gym Name</label>
+    <input [(ngModel)]="gym.name" type="text" placeholder="Enter gym name" />
+
+    <!-- Address -->
+    <label>Address</label>
+    <input [(ngModel)]="gym.address" type="text" placeholder="Enter address" />
+
+    <!-- City -->
+    <label>City</label>
+    <input [(ngModel)]="gym.city" type="text" placeholder="Enter city" />
+
+    <!-- Timings -->
+    <div class="row">
+      <div>
+        <label>Opening Time</label>
+        <input [(ngModel)]="gym.openingTime" type="time" />
+      </div>
+
+      <div>
+        <label>Closing Time</label>
+        <input [(ngModel)]="gym.closingTime" type="time" />
+      </div>
+    </div>
+
+    <!-- Price -->
+    <label>Price (₹)</label>
+    <input [(ngModel)]="gym.price" type="number" placeholder="Enter day pass price" />
+
+    <!-- Facilities -->
+    <label>Facilities (comma separated)</label>
+    <input [(ngModel)]="gym.facilities" type="text"
+           placeholder="AC, Parking, Locker" />
+
+    <!-- Equipment -->
+    <label>Equipment (comma separated)</label>
+    <input [(ngModel)]="gym.equipment" type="text"
+           placeholder="Treadmill, Dumbbells, Smith Machine" />
+
+    <!-- Existing Images -->
+    <label>Existing Images</label>
+    <div class="image-grid">
+      <div class="img-box" *ngFor="let img of gym.images">
+        <img [src]="img" />
+        <button class="remove-btn" (click)="removeExistingImage(img)">Remove</button>
+      </div>
+    </div>
+
+    <!-- Add New Images -->
+    <label>Add More Images</label>
+    <input type="file" multiple (change)="handleNewImages($event)" />
+
+    <!-- Save Button -->
+    <button class="save-btn" (click)="updateGym()" [disabled]="saving">
+      {{ saving ? 'Saving...' : 'Update Gym' }}
+    </button>
+
+  </div>
+
+</div>

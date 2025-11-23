@@ -1,40 +1,36 @@
-// Confirmation Component – GymFlex Daily Pass QR
-// Reads navigation state from Checkout and displays QR + details
-
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-confirmation',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './confirmation-component.html',
   styleUrls: ['./confirmation-component.scss'],
-  encapsulation: ViewEncapsulation.None
+  imports: [CommonModule]
 })
 export class ConfirmationComponent implements OnInit {
+
+  bookingId: string | null = null;
+  booking: any = null;
   gym: any = null;
-  form: any = null;
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    const nav = history.state;
+  const nav = history.state;
 
-    // If the user comes to this page directly, nav will be empty
-    if (!nav || !nav.gym || !nav.form) {
-      this.gym = null;
-      this.form = null;
-      return;
-    }
-
-    // Otherwise we safely load the passed data
-    this.gym = nav.gym;
-    this.form = nav.form;
+  if (!nav || !nav.bookingId || !nav.booking || !nav.gym) {
+    this.gym = null;
+    this.booking = null;
+    return;
   }
 
-  goHome(): void {
+  this.bookingId = nav.bookingId;
+  this.booking = nav.booking;
+  this.gym = nav.gym;
+}
+
+  goHome() {
     this.router.navigate(['/']);
   }
 }

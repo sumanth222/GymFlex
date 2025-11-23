@@ -1,0 +1,125 @@
+.edit-gym-page {
+  padding: 20px;
+  max-width: 700px;
+  margin: auto;
+  font-family: Inter, sans-serif;
+  color: black;
+}
+
+h1 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+label {
+  display: block;
+  margin: 15px 0 6px;
+  font-weight: 500;
+}
+
+input {
+  width: 90%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  outline: none;
+  margin-bottom: 10px;
+  background: #fafafa;
+  transition: 0.2s;
+}
+
+input:focus {
+  border-color: #000;
+}
+
+.row {
+  display: flex;
+  gap: 15px;
+
+  > div {
+    flex: 1;
+  }
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.img-box {
+  position: relative;
+
+  img {
+    width: 100%;
+    border-radius: 12px;
+    height: 120px;
+    object-fit: cover;
+  }
+
+  .remove-btn {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+    background: #ff3b3b;
+    color: white;
+    border: none;
+    border-radius: 8px;
+  }
+}
+
+.save-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  background: #000;
+  color: #fff;
+  font-weight: 600;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.loader-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+}
+
+.loader {
+  border: 4px solid #eee;
+  border-top: 4px solid #000;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.back-btn {
+  background: #f2f2f2;
+  border: none;
+  font-size: 20px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background: #e6e6e6;
+}

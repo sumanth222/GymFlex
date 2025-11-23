@@ -193,3 +193,48 @@
   border-radius: 10px;
   cursor: pointer;
 }
+
+.city-filter {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+  overflow-x: auto;
+  padding-bottom: 5px;
+}
+
+.city-chip {
+  padding: 8px 14px;
+  background: #f3f3f3;
+  border-radius: 20px;
+  white-space: nowrap;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.city-chip.active {
+  background: #000;
+  color: #fff;
+  font-weight: 600;
+}
+
+.category-filter {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0 20px;
+  overflow-x: auto;
+}
+
+.cat-chip {
+  padding: 7px 14px;
+  border-radius: 25px;
+  background: #ededed;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.cat-chip.selected {
+  background: #000;
+  color: #fff;
+  font-weight: 600;
+}

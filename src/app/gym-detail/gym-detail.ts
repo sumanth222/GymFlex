@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, NgZone, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Firestore, doc, getDoc } from '@angular/fire/firestore';
 
 // Simple state union for detail screen
 type GymDetailState = 'loading' | 'success' | 'empty' | 'error';
@@ -26,7 +27,9 @@ export class GymDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private firestore: Firestore,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -34,76 +37,50 @@ export class GymDetailComponent implements OnInit {
   }
 
   // ─────────────────────────────────────────
-  // DATA LOADING (mock for now)
+  // DATA LOADING
   // ─────────────────────────────────────────
-  loadGym(): void {
+  async loadGym(): Promise<void> {
     this.state = 'loading';
 
     try {
-      const id = this.route.snapshot.params['id'];
+        const id = this.route.snapshot.params['id'];
+        const gymRef = doc(this.firestore, 'gyms', id);
+        const snapshot = await getDoc(gymRef);
 
-      // MOCK DATA – replace with Firestore later
-      const data: any[] = [
-        {
-          id: 'gym_iron_flex_01',
-          name: 'Iron Flex Fitness Studio',
-          address: '4th Cross, HSR Layout, Sector 6, Bangalore',
-          city: 'Bangalore',
-          price: 199,
-          openingTime: '5:00 AM',
-          closingTime: '10:00 PM',
-          distanceKm: 1.3,
-          rating: 4.6,
-          ratingCount: 128,
-          images: [
-            'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b',
-            'https://images.unsplash.com/photo-1554284126-aa88f22d8b74',
-            'https://images.unsplash.com/photo-1517964108019-0d4df7e3d4dc'
-          ],
-          facilities: ['Strength Area', 'Cardio Zone', 'Locker Room', 'Showers'],
-          equipment: ['Bench Press', 'Squat Rack', 'Ellipticals', 'Dumbbells (2–40kg)']
-        },
-        {
-          id: 'gym_corex_02',
-          name: 'CoreX Fitness Club',
-          address: '17th Main Road, Koramangala 5th Block, Bangalore',
-          city: 'Bangalore',
-          price: 149,
-          openingTime: '6:00 AM',
-          closingTime: '11:00 PM',
-          distanceKm: 2.1,
-          rating: 4.3,
-          ratingCount: 86,
-          images: [
-            'https://images.unsplash.com/photo-1558611848-73f7eb4001a1',
-            'https://images.unsplash.com/photo-1574680096145-d05b474e2155',
-            'https://images.unsplash.com/photo-1599058917212-d750089bc07c'
-          ],
-          facilities: ['Strength Area', 'CrossFit Rig', 'Cardio Zone'],
-          equipment: ['Rower Machine', 'Deadlift Platform', 'Dumbbells (2–45kg)']
+        if (!snapshot.exists()) {
+            this.state = 'empty';
+            return;
         }
-      ];
 
-      const found = data.find(g => g.id === id);
+        const gymData = snapshot.data();
 
-      if (!found) {
-        this.state = 'empty';
-        return;
-      }
+        // Small delay (for skeleton screen effect)
+        setTimeout(() => {
+            this.gym = {
+                id: snapshot.id,
+                ...gymData,
 
-      // Simulate small delay for skeleton loading
-      setTimeout(() => {
-        this.gym = found;
-        this.currentImageIndex = 0;
-        this.state = 'success';
-      }, 300);
+                // Safe fallbacks
+                images: gymData['images'] ?? [],
+                rating: gymData['rating'] ?? 4.5,
+                ratingCount: gymData['ratingCount'] ?? 20,
+                distanceKm: gymData['distanceKm'] ?? 2.0
+            };
+
+            this.currentImageIndex = 0;
+
+            this.ngZone.run(() => {
+                this.state = 'success';
+            })
+        }, 250);
 
     } catch (err) {
-      console.error(err);
-      this.state = 'error';
-      this.errorMessage = 'Failed to load gym details.';
+        console.error('Error loading gym:', err);
+        this.errorMessage = 'Failed to load gym details.';
+        this.state = 'error';
     }
-  }
+}
+
 
   retry(): void {
     this.loadGym();

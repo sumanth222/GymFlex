@@ -3,8 +3,11 @@
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, NgZone, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Firestore, collection, addDoc } from '@angular/fire/firestore';
+import { doc, getDoc } from '@angular/fire/firestore';
+
 
 type CheckoutState = 'loading' | 'success' | 'empty' | 'error';
 
@@ -32,7 +35,9 @@ export class CheckoutComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private firestore: Firestore,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -40,47 +45,49 @@ export class CheckoutComponent implements OnInit {
   }
 
   // ─────────────────────────────────────
-  // LOAD GYM DATA (mock for now)
+  // LOAD GYM DATA
   // ─────────────────────────────────────
-  loadGym(): void {
-    this.state = 'loading';
+  async loadGym(): Promise<void> {
+  this.state = 'loading';
 
-    try {
-      const id = this.route.snapshot.params['id'];
+  try {
+    const id = this.route.snapshot.params['id'];
 
-      const data = [
-        {
-          id: 'gym_iron_flex_01',
-          name: 'Iron Flex Fitness Studio',
-          address: '4th Cross, HSR Layout, Sector 6, Bangalore',
-          price: 199
-        },
-        {
-          id: 'gym_corex_02',
-          name: 'CoreX Fitness Club',
-          address: '17th Main Road, Koramangala 5th Block, Bangalore',
-          price: 149
-        }
-      ];
+    const gymRef = doc(this.firestore, 'gyms', id);
+    const snapshot = await getDoc(gymRef);
 
-      const found = data.find(g => g.id === id);
-
-      if (!found) {
-        this.state = 'empty';
-        return;
-      }
-
-      setTimeout(() => {
-        this.gym = found;
-        this.state = 'success';
-      }, 300);
-
-    } catch (err) {
-      console.error(err);
-      this.state = 'error';
-      this.errorMessage = 'Failed to load checkout details.';
+    if (!snapshot.exists()) {
+      this.state = 'empty';
+      return;
     }
+
+    const gymData = snapshot.data();
+
+    // Delay for skeleton effect
+    setTimeout(() => {
+      this.gym = {
+        id: snapshot.id,
+        ...gymData,
+
+        // fallback values (for safety)
+        name: gymData['name'] ?? 'Gym',
+        address: gymData['address'] ?? '',
+        price: gymData['price'] ?? 0
+      };
+
+
+      this.ngZone.run(() => {
+          this.state = 'success';
+      })
+    }, 200);
+
+  } catch (err) {
+    console.error(err);
+    this.state = 'error';
+    this.errorMessage = 'Failed to load checkout details.';
   }
+}
+
 
   retry(): void {
     this.loadGym();
@@ -93,22 +100,48 @@ export class CheckoutComponent implements OnInit {
   // ─────────────────────────────────────
   // SUBMIT FORM
   // ─────────────────────────────────────
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (!this.form.name || !this.form.phone || !this.form.date) return;
 
     this.isSubmitting = true;
 
-    // Simulate payment processing
-    setTimeout(() => {
+    try {
+      // Build booking object
+      const bookingData = {
+        gymId: this.gym.id,
+        gymName: this.gym.name,
+        amount: this.gym.price,
+        userName: this.form.name,
+        phone: this.form.phone,
+        date: this.form.date, // YYYY-MM-DD
+        timestamp: Date.now(),
+
+        // optional fields
+        gymAddress: this.gym.address,
+        city: this.gym.city,
+        status: 'active' // active | expired | used
+      };
+
+      // Add to Firestore
+      const ref = await addDoc(collection(this.firestore, 'bookings'), bookingData);
+
+      const bookingId = ref.id;
+
       this.isSubmitting = false;
 
-      // In real case, send data to backend + generate QR
+      // Navigate to confirmation page WITH bookingId
       this.router.navigate(['/confirmation'], {
         state: {
-          gym: this.gym,
-          form: this.form
+          bookingId,
+          booking: bookingData,
+          gym: this.gym
         }
       });
-    }, 1200);
+
+    } catch (err) {
+      console.error("Booking failed:", err);
+      this.isSubmitting = false;
+      alert("Booking failed. Please try again.");
+    }
   }
 }

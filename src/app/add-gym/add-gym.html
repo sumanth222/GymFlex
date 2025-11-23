@@ -6,98 +6,90 @@
     <h1>Add Your Gym</h1>
   </div>
 
-  <!-- Scrollable form section -->
-  <div class="sections">
+  <form (ngSubmit)="submitGym()" class="form-container">
 
-    <!-- SECTION 1 -->
-    <div class="section-card">
-      <h2 class="section-title">Basic Information</h2>
+    <!-- GYM NAME -->
+    <div class="form-group">
+      <label>Gym Name</label>
+      <input type="text" [(ngModel)]="gym.name" name="name" required placeholder="Enter gym name" />
+    </div>
 
-      <div class="form-group">
-        <label>Gym Name</label>
-        <input type="text" class="input" [(ngModel)]="gym.name" placeholder="Iron Flex Fitness" />
+    <!-- ADDRESS -->
+    <div class="form-group">
+      <label>Address</label>
+      <textarea [(ngModel)]="gym.address" name="address" rows="2" required placeholder="Street, Area, Landmark"></textarea>
+    </div>
+
+    <!-- CITY -->
+    <div class="form-group">
+      <label>City</label>
+      <input type="text" [(ngModel)]="gym.city" name="city" required placeholder="Bangalore, Hyderabad, etc" />
+    </div>
+
+    <!-- TIMINGS -->
+    <div class="form-row">
+      <div class="form-group half">
+        <label>Opening Time</label>
+        <input type="time" [(ngModel)]="gym.openingTime" name="openingTime" required/>
       </div>
 
-      <div class="form-group">
-        <label>Address</label>
-        <textarea class="textarea" [(ngModel)]="gym.address" placeholder="Full gym address"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label>City</label>
-        <input type="text" class="input" [(ngModel)]="gym.city" placeholder="Bangalore" />
+      <div class="form-group half">
+        <label>Closing Time</label>
+        <input type="time" [(ngModel)]="gym.closingTime" name="closingTime" required />
       </div>
     </div>
 
-    <!-- SECTION 2 -->
-    <div class="section-card">
-      <h2 class="section-title">Timings & Price</h2>
-
-      <div class="two-col">
-        <div class="form-group">
-          <label>Opens At</label>
-          <input type="time" class="input" [(ngModel)]="gym.openingTime" />
-        </div>
-
-        <div class="form-group">
-          <label>Closes At</label>
-          <input type="time" class="input" [(ngModel)]="gym.closingTime" />
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Day Pass Price (₹)</label>
-        <input type="number" class="input" [(ngModel)]="gym.price" placeholder="199" />
-      </div>
+    <!-- PRICE -->
+    <div class="form-group">
+      <label>Day Pass Price (₹)</label>
+      <input type="number" [(ngModel)]="gym.price" name="price" required placeholder="Example: 199" />
     </div>
 
-    <!-- SECTION 3 -->
-    <div class="section-card">
-      <h2 class="section-title">Facilities</h2>
+    <!-- FACILITIES -->
+    <div class="section">
+      <label class="section-title">Facilities</label>
 
-      <div class="chips">
+      <div class="chip-list">
         <div
-          class="chip"
           *ngFor="let f of facilities"
-          [class.active]="gym.facilities.includes(f)"
-          (click)="toggleFacility(f)">
+          (click)="toggleFacility(f)"
+          class="chip"
+          [class.selected]="gym.facilities.includes(f)">
           {{ f }}
         </div>
       </div>
     </div>
 
-    <!-- SECTION 4 -->
-    <div class="section-card">
-      <h2 class="section-title">Equipment</h2>
+    <!-- EQUIPMENT -->
+    <div class="section">
+      <label class="section-title">Equipment</label>
 
-      <div class="chips">
+      <div class="chip-list">
         <div
-          class="chip"
           *ngFor="let e of equipmentList"
-          [class.active]="gym.equipment.includes(e)"
-          (click)="toggleEquipment(e)">
+          (click)="toggleEquipment(e)"
+          class="chip"
+          [class.selected]="gym.equipment.includes(e)">
           {{ e }}
         </div>
       </div>
     </div>
 
-    <!-- SECTION 5 -->
-    <div class="section-card">
-      <h2 class="section-title">Photos</h2>
+    <!-- IMAGES -->
+    <div class="section">
+      <label class="section-title">Upload Gym Images</label>
 
-      <input type="file" multiple accept="image/*" (change)="onImageSelect($event)" style="color: black;"/>
+      <input type="file" class="image-input" multiple (change)="onImageSelect($event)" style="color: black;"/>
 
       <div class="image-preview">
         <img *ngFor="let img of previewImages" [src]="img" />
       </div>
     </div>
-  </div>
 
-  <!-- Sticky bottom submit button -->
-  <div class="bottom-bar">
-    <button class="submit-btn" (click)="submitGym()">
-      {{ isSubmitting ? 'Submitting...' : 'Submit Gym' }}
+    <!-- SUBMIT -->
+    <button class="submit-btn" [disabled]="isSubmitting">
+      {{ isSubmitting ? 'Submitting...' : 'Add Gym' }}
     </button>
-  </div>
 
+  </form>
 </div>
