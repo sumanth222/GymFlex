@@ -5,6 +5,7 @@ import {
   OnDestroy,
   ViewChild,
   ElementRef,
+  NgZone,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -45,7 +46,8 @@ export class OwnerQrScannerComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private firestore: Firestore
+    private firestore: Firestore,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit() {
@@ -125,7 +127,9 @@ export class OwnerQrScannerComponent implements OnInit, OnDestroy {
       const snap = await getDoc(ref);
 
       if (!snap.exists()) {
-        this.verifyState = 'error';
+        this.ngZone.run(() => {
+          this.verifyState = 'error';
+        })
         this.verifyMessage = 'Invalid pass. Booking not found.';
         return;
       }
@@ -134,7 +138,9 @@ export class OwnerQrScannerComponent implements OnInit, OnDestroy {
 
       // Optional: ensure pass is for this gym
       if (this.gymId && data.gymId !== this.gymId) {
-        this.verifyState = 'error';
+        this.ngZone.run(() => {
+          this.verifyState = 'error';
+        })
         this.verifyMessage = 'This pass is not for your gym.';
         return;
       }
@@ -142,25 +148,33 @@ export class OwnerQrScannerComponent implements OnInit, OnDestroy {
       // Check date (only valid for today)
       const today = new Date().toISOString().split('T')[0];
       if (data.date !== today) {
-        this.verifyState = 'error';
+        this.ngZone.run(() => {
+          this.verifyState = 'error';
+        })
         this.verifyMessage = `Expired/Invalid date. Pass is for ${data.date}.`;
         return;
       }
 
       // Check status
       if (data.status === 'used') {
-        this.verifyState = 'error';
+        this.ngZone.run(() => {
+          this.verifyState = 'error';
+        })
         this.verifyMessage = 'This pass has already been used.';
         return;
       }
 
       this.booking = { id: snap.id, ...data };
-      this.verifyState = 'success';
+      this.ngZone.run(() => {
+          this.verifyState = 'success';
+        })
       this.verifyMessage = 'Valid pass. You can allow entry.';
 
     } catch (err) {
       console.error('Verify error:', err);
-      this.verifyState = 'error';
+      this.ngZone.run(() => {
+          this.verifyState = 'error';
+        })
       this.verifyMessage = 'Something went wrong while verifying the pass.';
     }
   }
