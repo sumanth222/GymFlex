@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { Router, RouterOutlet } from "@angular/router";
+import { FooterComponent } from "./footer/footer";
 
 
 @Component({
 selector: 'app-root',
 templateUrl: './app.html',
 styleUrls: ['./app.scss'],
-imports: [RouterOutlet]
+imports: [RouterOutlet, FooterComponent]
 })
 export class AppComponent {
 title = 'GymFlex';
@@ -15,7 +16,7 @@ title = 'GymFlex';
 
   }
 
-  goHome(){
+  goHome() {
     this.router.navigate(['/home']);
   }
 }

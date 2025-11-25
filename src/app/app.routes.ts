@@ -9,6 +9,7 @@ import { OwnerDashboardComponent } from './owner-dashboard/owner-dashboard';
 import { AddGymComponent } from './add-gym/add-gym';
 import { EditGymComponent } from './edit-gym/edit-gym';
 import { OwnerQrScannerComponent } from './owner-qr-scanner/owner-qr-scanner';
+import { AboutComponent } from './about/about';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -22,6 +23,8 @@ export const routes: Routes = [
   { path: 'owner/add-gym', component: AddGymComponent },
   { path: 'owner/edit-gym/:id', component: EditGymComponent},
   { path: 'owner/scan/:gymId', component: OwnerQrScannerComponent},
+
+  { path: 'about', component: AboutComponent },
 
   // MUST be last among owner routes
   { path: 'owner', component: OwnerDashboardComponent },
