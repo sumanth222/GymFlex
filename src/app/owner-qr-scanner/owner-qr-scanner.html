@@ -93,6 +93,13 @@
       >
         {{ booking.status === 'used' ? 'Already Marked as Used' : 'Mark as Used' }}
       </button>
+
+      <button
+        class="primary-btn full"
+        (click)="resetData()"
+      >
+        {{ 'Scan another QR Code' }}
+      </button>
     </div>
   </section>
 </div>

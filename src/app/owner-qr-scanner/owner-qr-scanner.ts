@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Firestore, doc, getDoc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, doc, getDoc, getDocs, updateDoc } from '@angular/fire/firestore';
 import { BrowserMultiFormatReader } from '@zxing/browser';
 import { Result } from '@zxing/library';
 import { FormsModule } from '@angular/forms';
@@ -58,6 +58,14 @@ export class OwnerQrScannerComponent implements OnInit, OnDestroy {
     this.stopScanning();
   }
 
+  resetData(){
+    this.ngZone.run(() => {
+      this.verifyState = 'idle';
+      this.verifyMessage = '';
+      this.bookingId = '';
+    })
+  }
+
   async startScanning(): Promise<void> {
     this.scanError = '';
     this.booking = null;
@@ -99,13 +107,20 @@ export class OwnerQrScannerComponent implements OnInit, OnDestroy {
   }
 
   stopScanning(): void {
-  if (this.controls) {
-    this.controls.stop();   // THIS is the correct method
-  }
+  try {
+    if (this.currentStream) {
+      this.currentStream.getTracks().forEach(track => track.stop());
+      this.currentStream = null;
+    }
 
-  if (this.currentStream) {
-    this.currentStream.getTracks().forEach((t) => t.stop());
-    this.currentStream = null;
+    const videoElement = this.videoRef?.nativeElement;
+    if (videoElement) {
+      videoElement.pause();
+      videoElement.srcObject = null;
+    }
+
+  } catch (err) {
+    console.error("Stop scan error:", err);
   }
 
   this.scanning = false;
@@ -122,78 +137,110 @@ export class OwnerQrScannerComponent implements OnInit, OnDestroy {
     this.verifyMessage = '';
     this.booking = null;
 
+    let bookingExists = false;
+    var booking : any;
+
     try {
-      const ref = doc(this.firestore, 'bookings', id);
-      const snap = await getDoc(ref);
+      const ref = collection(this.firestore, 'bookings');
+      const snapshot = await getDocs(ref);
 
-      if (!snap.exists()) {
-        this.ngZone.run(() => {
-          this.verifyState = 'error';
-        })
+      snapshot.docs.every((doc) => {
+        if(doc.id === id){
+          bookingExists = true;
+          booking = doc.data();
+          return false;
+        }
+        return true;
+      })
+
+    } catch (err) {
+      console.error("Error fetching bookings:", err);
+      this.ngZone.run(() => {
+        this.verifyState = 'error';
         this.verifyMessage = 'Invalid pass. Booking not found.';
-        return;
-      }
+      })
+      
+      return;
+    }
 
-      const data: any = snap.data();
+    if(!bookingExists){
+      this.ngZone.run(() => {
+        this.verifyState = 'error';
+        this.verifyMessage = 'Invalid pass. Booking not found.';
+      })
+      return;
+    }
 
+    try {
       // Optional: ensure pass is for this gym
-      if (this.gymId && data.gymId !== this.gymId) {
+      if (this.gymId && booking.gymId !== this.gymId) {
         this.ngZone.run(() => {
           this.verifyState = 'error';
+          this.verifyMessage = 'This pass is not for your gym.';
         })
-        this.verifyMessage = 'This pass is not for your gym.';
         return;
       }
 
       // Check date (only valid for today)
       const today = new Date().toISOString().split('T')[0];
-      if (data.date !== today) {
+      if (booking.date !== today) {
         this.ngZone.run(() => {
           this.verifyState = 'error';
+          this.verifyMessage = `Expired/Invalid date. Pass is for ${booking.date}.`;
         })
-        this.verifyMessage = `Expired/Invalid date. Pass is for ${data.date}.`;
+        
         return;
       }
 
       // Check status
-      if (data.status === 'used') {
+      if (booking.status === 'used') {
         this.ngZone.run(() => {
           this.verifyState = 'error';
+          this.verifyMessage = 'This pass has already been used.';
         })
-        this.verifyMessage = 'This pass has already been used.';
+        
         return;
       }
 
-      this.booking = { id: snap.id, ...data };
+      this.booking = { id: booking.id, ...booking };
       this.ngZone.run(() => {
           this.verifyState = 'success';
-        })
-      this.verifyMessage = 'Valid pass. You can allow entry.';
+          this.verifyMessage = 'Valid pass. You can allow entry.';
+      })
 
     } catch (err) {
       console.error('Verify error:', err);
       this.ngZone.run(() => {
           this.verifyState = 'error';
+          this.verifyMessage = 'Something went wrong while verifying the pass.';
         })
-      this.verifyMessage = 'Something went wrong while verifying the pass.';
     }
   }
 
   async markAsUsed(): Promise<void> {
-    if (!this.booking || !this.booking.id) return;
+    var bookingRef : any;
 
-    try {
-      const ref = doc(this.firestore, 'bookings', this.booking.id);
-      await updateDoc(ref, {
-        status: 'used',
-        usedAt: Date.now(),
-      });
+    try{
 
-      this.verifyMessage = 'Pass marked as used.';
-      this.booking.status = 'used';
-    } catch (err) {
-      console.error('Failed to mark as used:', err);
-      this.verifyMessage = 'Failed to update pass status.';
+    const ref = doc(this.firestore, `bookings/${this.bookingId}`);
+    const snap = await getDoc(ref);
+
+    if (!snap.exists()) {
+      this.verifyState = 'error';
+      this.verifyMessage = 'Invalid pass. Booking not found.';
+      return;
+    }
+
+    // Now update
+    await updateDoc(ref, {
+      status: 'used',
+      usedAt: Date.now()
+    });
+
+    this.resetData();
+  }
+  catch(err){
+      console.error("Error: ", err);
     }
   }
 
