@@ -161,4 +161,8 @@ trackByGymId(index: number, gym: any): string {
 goToGym(gymId: string): void {
   this.router.navigate(['/gym', gymId]);
 }
+
+goToOwner(){
+  this.router.navigate(['/owner'])
+}
 }

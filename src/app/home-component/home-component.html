@@ -1,54 +1,64 @@
-<!-- Home Component - Beautiful Zomato/Airbnb Inspired UI -->
+<!-- Home Component - Premium Zomato/Airbnb Inspired UI -->
 <div class="home-page">
+
+  <!-- TOP NAV BAR -->
+  <header class="top-nav">
+    <div class="logo">GymFlex</div>
+    <button class="owner-btn" (click)="goToOwner()">Are you an Owner?</button>
+  </header>
+
   <!-- HERO SECTION -->
   <section class="hero">
-    <h1 class="title">Discover Gyms Near You</h1>
+    <h1 class="title">Discover Gyms Near <span style="color: #ff914d;">You</span></h1>
     <p class="subtitle">Daily passes • No membership • Train anywhere</p>
 
     <!-- SEARCH BAR -->
     <div class="search-box">
       <input 
-        type="text" 
+        type="text"
         placeholder="Search by area, landmark, or gym name"
         [(ngModel)]="searchTerm"
         (input)="applyFilters()"
-        />
+      />
       <button class="search-btn">Search</button>
     </div>
   </section>
 
   <!-- CITY FILTERS -->
-    <div class="city-filter" *ngIf="cities.length > 0">
-        <div 
-            class="city-chip" 
-            *ngFor="let c of cities" 
-            [class.active]="selectedCity === c"
-            (click)="selectCity(c)"
-        >
-            {{ c }}
-        </div>
-    </div>
-
-    <!-- CATEGORY FILTERS -->
-    <div class="category-filter">
-    <div 
-        class="cat-chip" 
-        *ngFor="let cat of categories" 
-        [class.selected]="selectedCategory === cat"
-        (click)="selectCategory(cat)"
+  <div class="city-filter" *ngIf="cities.length > 0">
+    <div
+      class="city-chip"
+      *ngFor="let c of cities"
+      [class.active]="selectedCity === c"
+      (click)="selectCity(c)"
     >
-        {{ cat }}
+      {{ c }}
     </div>
+  </div>
+
+  <!-- CATEGORY FILTERS -->
+  <div class="category-filter">
+    <div
+      class="cat-chip"
+      *ngFor="let cat of categories"
+      [class.selected]="selectedCategory === cat"
+      (click)="selectCategory(cat)"
+    >
+      {{ cat }}
     </div>
+  </div>
 
   <!-- GYM LIST -->
   <section class="gym-list" *ngIf="state === 'success'">
     <div class="gym-card" *ngFor="let gym of gyms" (click)="goToGym(gym.id)">
+      
+      <!-- IMAGE -->
       <div class="img-wrap">
-        <img [src]="gym.images[0]" alt="Gym Image" />
+        <img [src]="gym.images[0]" alt="Gym Image" loading="lazy" />
         <div class="tag">{{ gym.distanceKm }} km away</div>
       </div>
 
+      <!-- CONTENT -->
       <div class="details">
         <h2 class="name">{{ gym.name }}</h2>
         <p class="address">{{ gym.address }}</p>
@@ -58,22 +68,24 @@
           <span class="rating">⭐ {{ gym.rating }}</span>
         </div>
       </div>
+
     </div>
   </section>
 
-  <!-- LOADING STATE -->
+  <!-- LOADING -->
   <div class="loading" *ngIf="state === 'loading'">
     <div class="skeleton-card" *ngFor="let i of [1,2,3,4]"></div>
   </div>
 
-  <!-- EMPTY STATE -->
+  <!-- EMPTY -->
   <div class="empty" *ngIf="state === 'empty'">
     <p>No gyms found. Try another location.</p>
   </div>
 
-  <!-- ERROR STATE -->
+  <!-- ERROR -->
   <div class="error" *ngIf="state === 'error'">
     <p>{{ errorMessage }}</p>
     <button class="retry-btn" (click)="retry()">Retry</button>
   </div>
+
 </div>
