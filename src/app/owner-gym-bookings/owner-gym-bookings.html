@@ -1,0 +1,52 @@
+<div class="bookings-page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <button class="back-btn" (click)="goBack()">←</button>
+    <h2>Bookings</h2>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading" *ngIf="loading">
+    <div class="loader"></div>
+    <p>Loading bookings...</p>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div class="empty" *ngIf="!loading && bookings.length === 0">
+    <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" />
+    <h3>No Bookings Yet</h3>
+    <p>Your customers’ bookings will appear here.</p>
+  </div>
+
+  <!-- BOOKINGS LIST -->
+  <div class="booking-list" *ngIf="!loading && bookings.length > 0">
+
+    <div class="booking-card" *ngFor="let b of bookings">
+
+      <div class="top-row">
+        <h4>{{ b.userName || b.userPhone || "Unknown User" }}</h4>
+
+        <span class="status"
+          [class.paid]="b.status === 'paid'"
+          [class.pending]="b.status === 'pending'"
+          [class.cancelled]="b.status === 'cancelled'">
+          {{ b.status | titlecase }}
+        </span>
+      </div>
+
+      <div class="info-row">
+        <span>📅 {{ b.date }}</span>
+        <span>🕒 {{ b.timeSlot || 'Anytime' }}</span>
+      </div>
+
+      <div class="meta">
+        <p>Booking ID: <strong>{{ b.id }}</strong></p>
+        <p>Amount Paid: <strong>₹{{ b.amount }}</strong></p>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,36 @@
+<div class="gym-view-container" *ngIf="loading">Loading gym…</div>
+
+<div class="gym-view-container" *ngIf="!loading && gym">
+    
+  <h1 class="title">{{ gym.name }}</h1>
+
+  <img class="cover-img" [src]="gym.images?.[0] || placeholderImg" />
+
+  <p class="address">{{ gym.address }}</p>
+
+  <div class="section">
+    <h3>Timings</h3>
+    <p>{{ gym.openingTime }} – {{ gym.closingTime }}</p>
+  </div>
+
+  <div class="section">
+    <h3>Price</h3>
+    <p>₹{{ gym.price }} / Day Pass</p>
+  </div>
+
+  <div class="section">
+    <h3>Facilities</h3>
+    <div class="chips">
+      <span class="chip" *ngFor="let f of gym.facilities">{{ f }}</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Equipment</h3>
+    <div class="chips">
+      <span class="chip" *ngFor="let e of gym.equipment">{{ e }}</span>
+    </div>
+  </div>
+
+  <button class="primary-btn" (click)="goBack()">Back to Dashboard</button>
+</div>

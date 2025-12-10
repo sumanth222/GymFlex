@@ -10,6 +10,8 @@ import { AddGymComponent } from './add-gym/add-gym';
 import { EditGymComponent } from './edit-gym/edit-gym';
 import { OwnerQrScannerComponent } from './owner-qr-scanner/owner-qr-scanner';
 import { AboutComponent } from './about/about';
+import { OwnerGymBookingsComponent } from './owner-gym-bookings/owner-gym-bookings';
+import { OwnerGymViewComponent } from './owner-gym-view/owner-gym-view';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -23,6 +25,9 @@ export const routes: Routes = [
   { path: 'owner/add-gym', component: AddGymComponent },
   { path: 'owner/edit-gym/:id', component: EditGymComponent},
   { path: 'owner/scan/:gymId', component: OwnerQrScannerComponent},
+
+  { path: 'owner/gym-bookings/:id', component: OwnerGymBookingsComponent },
+  { path: 'owner/gym/:id', component: OwnerGymViewComponent },
 
   { path: 'about', component: AboutComponent },
 
