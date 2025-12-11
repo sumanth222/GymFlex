@@ -5,27 +5,49 @@
 
   <!-- HERO IMAGE CAROUSEL -->
   <div class="carousel"
-       (touchstart)="onTouchStart($event)"
-       (touchmove)="onTouchMove($event)"
-       (touchend)="onTouchEnd()">
+     (touchstart)="onTouchStart($event)"
+     (touchmove)="onTouchMove($event)"
+     (touchend)="onTouchEnd()">
 
-    <!-- IMAGE -->
-    <img class="carousel-img" [src]="currentImage" alt="Gym image" />
+  <div class="carousel-img-wrap">
+    <img
+      class="carousel-img"
+      [src]="currentImage"
+      alt="Gym image"
+      (load)="onImageLoad()"
+      (error)="onImageError()" />
 
-    <!-- LEFT ARROW -->
-    <button class="carousel-arrow left" (click)="prevImage()">❮</button>
-
-    <!-- RIGHT ARROW -->
-    <button class="carousel-arrow right" (click)="nextImage()">❯</button>
-
-    <!-- DOTS -->
-    <div class="carousel-dots" *ngIf="gym.images.length > 1">
-      <span class="dot"
-            *ngFor="let img of gym.images; let i = index"
-            [class.active]="i === currentImageIndex"
-            (click)="goToImage(i)"></span>
+    <!-- IMAGE LOADER OVERLAY -->
+    <div class="img-loader" *ngIf="isImageLoading" aria-hidden="true">
+      <div class="spinner"></div>
     </div>
   </div>
+
+  <!-- LEFT ARROW -->
+  <button class="carousel-arrow left"
+          (click)="prevImageClick()"
+          [disabled]="isImageLoading"
+          aria-label="Previous image">
+    ❮
+  </button>
+
+  <!-- RIGHT ARROW -->
+  <button class="carousel-arrow right"
+          (click)="nextImageClick()"
+          [disabled]="isImageLoading"
+          aria-label="Next image">
+    ❯
+  </button>
+
+  <!-- DOTS -->
+  <div class="carousel-dots" *ngIf="totalImages > 1">
+    <span class="dot"
+          *ngFor="let img of gym.images; let i = index"
+          [class.active]="i === currentImageIndex"
+          (click)="goToImage(i)"></span>
+  </div>
+</div>
+
 
   <!-- DETAILS CARD -->
   <section class="hero-card">
@@ -34,7 +56,10 @@
 
     <div class="meta-row">
       <div class="rating">⭐ {{ gym.rating }} <span class="rating-count">({{ gym.ratingCount }})</span></div>
-      <div class="timings">{{ gym.openingTime }} - {{ gym.closingTime }}</div>
+      <div class="timing-row">
+        <div class="timings"><b>{{ gym.openingTime }} - {{ gym.closingTime }}</b></div>
+        <div *ngIf="gym.timingsNote" class="timings">{{ gym.timingsNote }}</div>
+      </div>
     </div>
 
     <div class="price-row">₹{{ gym.price }} / day</div>

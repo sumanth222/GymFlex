@@ -21,9 +21,16 @@ export class GymDetailComponent implements OnInit {
 
   // Carousel state
   currentImageIndex = 0;
-  private touchStartX = 0;
+
+  // Touch handling
+  private touchStartX: number | null = null;
   private touchDeltaX = 0;
   private readonly swipeThreshold = 40; // px
+
+  // Image loading indicator + safety timeout
+  isImageLoading = false;
+  private imageLoadTimeout: any | null = null;
+  private imageLoadTimeoutMs = 6000;
 
   constructor(
     private route: ActivatedRoute,
@@ -43,44 +50,44 @@ export class GymDetailComponent implements OnInit {
     this.state = 'loading';
 
     try {
-        const id = this.route.snapshot.params['id'];
-        const gymRef = doc(this.firestore, 'gyms', id);
-        const snapshot = await getDoc(gymRef);
+      const id = this.route.snapshot.params['id'];
+      const gymRef = doc(this.firestore, 'gyms', id);
+      const snapshot = await getDoc(gymRef);
 
-        if (!snapshot.exists()) {
-            this.state = 'empty';
-            return;
-        }
+      if (!snapshot.exists()) {
+        this.state = 'empty';
+        return;
+      }
 
-        const gymData = snapshot.data();
+      const gymData = snapshot.data();
 
-        // Small delay (for skeleton screen effect)
-        setTimeout(() => {
-            this.gym = {
-                id: snapshot.id,
-                ...gymData,
+      // Small delay (for skeleton screen effect)
+      setTimeout(() => {
+        this.gym = {
+          id: snapshot.id,
+          ...gymData,
 
-                // Safe fallbacks
-                images: gymData['images'] ?? [],
-                rating: gymData['rating'] ?? 4.5,
-                ratingCount: gymData['ratingCount'] ?? 20,
-                distanceKm: gymData['distanceKm'] ?? 2.0
-            };
+          // Safe fallbacks
+          images: gymData['images'] ?? [],
+          rating: gymData['rating'] ?? 4.5,
+          ratingCount: gymData['ratingCount'] ?? 20,
+          distanceKm: gymData['distanceKm'] ?? 2.0
+        };
 
-            this.currentImageIndex = 0;
+        this.currentImageIndex = 0;
 
-            this.ngZone.run(() => {
-                this.state = 'success';
-            })
-        }, 250);
+        // ensure Angular picks up the change
+        this.ngZone.run(() => {
+          this.state = 'success';
+        });
+      }, 250);
 
     } catch (err) {
-        console.error('Error loading gym:', err);
-        this.errorMessage = 'Failed to load gym details.';
-        this.state = 'error';
+      console.error('Error loading gym:', err);
+      this.errorMessage = 'Failed to load gym details.';
+      this.state = 'error';
     }
-}
-
+  }
 
   retry(): void {
     this.loadGym();
@@ -96,7 +103,7 @@ export class GymDetailComponent implements OnInit {
   }
 
   // ─────────────────────────────────────────
-  // CAROUSEL HELPERS
+  // CAROUSEL HELPERS (with loading spinner)
   // ─────────────────────────────────────────
 
   get hasImages(): boolean {
@@ -112,26 +119,68 @@ export class GymDetailComponent implements OnInit {
     return this.gym.images[this.currentImageIndex];
   }
 
-  nextImage(): void {
+  // central setter that also manages loading state
+  setImageByIndex(index: number): void {
     if (!this.hasImages) return;
-    this.currentImageIndex = (this.currentImageIndex + 1) % this.totalImages;
+
+    const len = this.totalImages;
+    index = ((index % len) + len) % len; // normalize to [0, len)
+
+    if (index === this.currentImageIndex) return;
+
+    // show loader immediately
+    this.isImageLoading = true;
+
+    // update index (getter currentImage will reflect new src)
+    this.currentImageIndex = index;
+
+    // safety: clear previous timeout and set new one
+    if (this.imageLoadTimeout) {
+      clearTimeout(this.imageLoadTimeout);
+    }
+    this.imageLoadTimeout = setTimeout(() => {
+      this.isImageLoading = false;
+      this.imageLoadTimeout = null;
+    }, this.imageLoadTimeoutMs);
   }
 
-  prevImage(): void {
-    if (!this.hasImages) return;
-    this.currentImageIndex =
-      (this.currentImageIndex - 1 + this.totalImages) % this.totalImages;
+  // prev/next use the central setter
+  prevImageClick(): void {
+    this.setImageByIndex(this.currentImageIndex - 1);
+  }
+
+  nextImageClick(): void {
+    this.setImageByIndex(this.currentImageIndex + 1);
   }
 
   goToImage(index: number): void {
-    if (!this.hasImages) return;
-    if (index < 0 || index >= this.totalImages) return;
-    this.currentImageIndex = index;
+    this.setImageByIndex(index);
+  }
+
+  // These methods are intended to be wired to the <img> load/error events
+  onImageLoad(): void {
+    this.isImageLoading = false;
+    if (this.imageLoadTimeout) {
+      clearTimeout(this.imageLoadTimeout);
+      this.imageLoadTimeout = null;
+    }
+  }
+
+  onImageError(): void {
+    // hide loader and clear timeout; optionally you can set a fallback image here
+    this.isImageLoading = false;
+    if (this.imageLoadTimeout) {
+      clearTimeout(this.imageLoadTimeout);
+      this.imageLoadTimeout = null;
+    }
+    // optional fallback:
+    // if (this.gym?.images?.length) {
+    //   this.gym.images[this.currentImageIndex] = '/assets/img/placeholder.png';
+    // }
   }
 
   // ─────────────────────────────────────────
   // TOUCH EVENTS FOR MOBILE SWIPE
-  // (hook these in HTML with (touchstart), (touchmove), (touchend))
   // ─────────────────────────────────────────
 
   onTouchStart(event: TouchEvent): void {
@@ -141,7 +190,7 @@ export class GymDetailComponent implements OnInit {
   }
 
   onTouchMove(event: TouchEvent): void {
-    if (!event.touches || event.touches.length === 0) return;
+    if (!event.touches || event.touches.length === 0 || this.touchStartX === null) return;
     this.touchDeltaX = event.touches[0].clientX - this.touchStartX;
   }
 
@@ -149,13 +198,13 @@ export class GymDetailComponent implements OnInit {
     if (Math.abs(this.touchDeltaX) > this.swipeThreshold) {
       if (this.touchDeltaX < 0) {
         // swiped left → next
-        this.nextImage();
+        this.setImageByIndex(this.currentImageIndex + 1);
       } else {
         // swiped right → prev
-        this.prevImage();
+        this.setImageByIndex(this.currentImageIndex - 1);
       }
     }
-    this.touchStartX = 0;
+    this.touchStartX = null;
     this.touchDeltaX = 0;
   }
 }
