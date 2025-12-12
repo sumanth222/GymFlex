@@ -50,17 +50,20 @@ async loadGyms(): Promise<void> {
 
     snapshot.forEach(doc => {
       const gym = doc.data();
-      result.push({
-        id: doc.id,
-        ...gym,
 
-        // If distance is not stored, keep placeholder for now
-        distanceKm: gym['distanceKm'] ?? 2.0,
+      if(gym['list']){
+        result.push({
+          id: doc.id,
+          ...gym,
 
-        // If rating doesn't exist yet 
-        rating: gym['rating'] ?? 4.5,
-        ratingCount: gym['ratingCount'] ?? 20
-      });
+          // If distance is not stored, keep placeholder for now
+          distanceKm: gym['distanceKm'] ?? 2.0,
+
+          // If rating doesn't exist yet 
+          rating: gym['rating'] ?? 4.5,
+          ratingCount: gym['ratingCount'] ?? 20
+        });
+      }
     });
 
     if (result.length === 0) {
