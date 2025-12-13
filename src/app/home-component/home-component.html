@@ -36,6 +36,19 @@
     </div>
   </div>
 
+  <!-- LOCALITY FILTERS -->
+<div class="locality-filter" *ngIf="localities.length > 0">
+  <div
+    class="locality-chip"
+    *ngFor="let loc of localities"
+    [class.selected]="selectedLocality === loc"
+    (click)="selectLocality(loc)"
+  >
+    {{ loc }}
+  </div>
+</div>
+
+<div style="height: 1px;width: 98%; background: #adaca6;"></div>
   <!-- CATEGORY FILTERS -->
   <div class="category-filter">
     <div

@@ -30,6 +30,10 @@ selectedCategory: string = 'Nearby';
 searchTerm: string = '';
 gymsOriginal: any[] = [];
 
+selectedLocality: string | null = null;
+
+localities: string[] = []; // will populate dynamically
+
 constructor(private router: Router, private firestore: Firestore, private ngZone: NgZone) {}
 
 
@@ -101,9 +105,31 @@ sortNearby(list: any[]) {
 }
 
 selectCity(city: string) {
+
+  let list = [...this.gymsOriginal];
+
   this.selectedCity = city;
   this.applyFilters();
+  this.selectedCity = city;
+  this.selectedLocality = null;
+
+  const gymsInCity = list.filter(g => g.city === city);
+  const uniqueLocs = [...new Set(gymsInCity.map(g => g.locality))];
+
+  this.localities = uniqueLocs;
+  this.gyms = gymsInCity;   // initial filter just by city
 }
+
+selectLocality(loc: string) {
+
+  let list = [...this.gymsOriginal];
+
+  this.selectedLocality = loc;
+  this.gyms = list.filter(
+    g => g.city === this.selectedCity && g.locality === loc
+  );
+}
+
 
 selectCategory(cat: string) {
   this.selectedCategory = cat;
