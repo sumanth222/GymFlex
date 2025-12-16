@@ -84,7 +84,7 @@ async loadGyms(): Promise<void> {
     this.gymsOriginal = result;
 
     // Default sorting: Nearby
-    this.sortNearby(result);
+    this.sortCreatedBy(result);
 
     // Set final list
     this.gyms = result;
@@ -102,6 +102,10 @@ async loadGyms(): Promise<void> {
 
 sortNearby(list: any[]) {
   this.gyms = list.sort((a, b) => a.distanceKm - b.distanceKm);
+}
+
+sortCreatedBy(list: any[]) {
+  this.gyms = list.sort((a, b) => b.createdAt - a.createdAt);
 }
 
 selectCity(city: string) {
