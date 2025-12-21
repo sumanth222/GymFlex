@@ -1,81 +1,97 @@
-<!-- Confirmation Page – GymFlex Daily Pass -->
 <div class="confirm-page" *ngIf="gym && booking">
 
-  <!-- Back -->
   <button class="back-btn" (click)="goHome()">← Home</button>
 
-  <!-- SUCCESS HEADER -->
-  <section class="success-header">
-    <h1 class="title">You're all set! 🎉</h1>
-    <p class="subtitle">Show this QR code at the gym reception to enter.</p>
-  </section>
+  <!-- ===================== -->
+  <!-- PAYMENT PENDING -->
+  <!-- ===================== -->
+  <ng-container *ngIf="paymentState === 'pending'">
 
-  <!-- QR CARD -->
-  <section class="qr-card">
-    <div class="qr-wrapper">
-      <img 
-        [src]="'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + bookingId"
-        alt="QR Code"
-      />
-    </div>
+    <section class="success-header pending">
+      <h1 class="title">Complete your payment</h1>
+      <p class="subtitle">
+        Finish the UPI payment in your app and come back here.
+      </p>
+    </section>
 
-    <div class="qr-info">
-      <div class="gym-name">{{ gym.name }}</div>
-      <div class="gym-address">{{ gym.address }}</div>
+    <section class="qr-card">
+      <div class="qr-info">
+        <div class="gym-name">{{ gym.name }}</div>
+        <div class="gym-address">{{ gym.address }}</div>
 
-      <div class="visit-details">
-        <div class="label">Visit Date</div>
-        <div class="value">{{ booking.date }}</div>
+        <div class="visit-details">
+          <div class="label">Amount to Pay</div>
+          <div class="value price">₹{{ booking.amount }}</div>
+        </div>
+
+        <div class="visit-details">
+          <div class="label">Booking ID</div>
+          <div class="value booking-id">{{ bookingId }}</div>
+        </div>
+      </div>
+    </section>
+
+    <button class="primary-btn full-width" (click)="markAsPaid()">
+      I’ve Paid
+    </button>
+
+    <p class="helper-text">
+      Don’t close this page until payment is completed.
+    </p>
+
+  </ng-container>
+
+  <!-- ===================== -->
+  <!-- PAYMENT SUBMITTED -->
+  <!-- ===================== -->
+  <ng-container *ngIf="paymentState === 'submitted'">
+
+    <section class="success-header waiting">
+      <h1 class="title">Payment submitted</h1>
+      <p class="subtitle">
+        We’re verifying your payment. This usually takes a few minutes.
+      </p>
+    </section>
+
+    <section class="info-card">
+      <ul>
+        <li>Do not visit the gym until payment is confirmed.</li>
+        <li>You’ll see a QR code here once approved.</li>
+        <li>We’ll notify you on WhatsApp.</li>
+      </ul>
+    </section>
+
+  </ng-container>
+
+  <!-- ===================== -->
+  <!-- PAYMENT CONFIRMED -->
+  <!-- ===================== -->
+  <ng-container *ngIf="paymentState === 'confirmed'">
+
+    <section class="success-header">
+      <h1 class="title">You’re all set 🎉</h1>
+      <p class="subtitle">Show this QR code at the gym reception.</p>
+    </section>
+
+    <section class="qr-card">
+      <div class="qr-wrapper">
+        <img
+          [src]="'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + bookingId"
+          alt="QR Code"
+        />
       </div>
 
-      <div class="visit-details" *ngIf="booking.time">
-        <div class="label">Preferred Time</div>
-        <div class="value">{{ booking.time }}</div>
+      <div class="qr-info">
+        <div class="gym-name">{{ gym.name }}</div>
+        <div class="gym-address">{{ gym.address }}</div>
+
+        <div class="visit-details">
+          <div class="label">Visit Date</div>
+          <div class="value">{{ booking.date }}</div>
+        </div>
       </div>
+    </section>
 
-      <div class="visit-details">
-        <div class="label">Booking ID</div>
-        <div class="value booking-id">{{ bookingId }}</div>
-      </div>
-    </div>
-  </section>
+  </ng-container>
 
-  <!-- USER DETAILS CARD -->
-  <section class="details-card">
-    <h2>Your Details</h2>
-
-    <div class="row">
-      <span>Name</span> 
-      <strong>{{ booking.userName }}</strong>
-    </div>
-
-    <div class="row">
-      <span>Phone</span> 
-      <strong>{{ booking.phone }}</strong>
-    </div>
-
-    <div class="row price-row">
-      <span>Amount Paid</span> 
-      <strong>₹{{ booking.amount }}</strong>
-    </div>
-  </section>
-
-  <!-- HOW IT WORKS CARD -->
-  <section class="info-card">
-    <h3>What to do now</h3>
-    <ul>
-      <li>Visit the gym on your selected date.</li>
-      <li>Show the QR code at the reception.</li>
-      <li>Enjoy your workout!</li>
-    </ul>
-  </section>
-
-  <!-- BUTTON -->
-  <button class="primary-btn" (click)="goHome()">Done</button>
-</div>
-
-<!-- Fallback -->
-<div class="confirm-page center" *ngIf="!gym || !booking">
-  <p>Session expired. Please book again.</p>
-  <button class="primary-btn" (click)="goHome()">Back to Home</button>
 </div>
