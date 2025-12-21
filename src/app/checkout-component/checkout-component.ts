@@ -30,8 +30,20 @@ export class CheckoutComponent implements OnInit {
     name: '',
     phone: '',
     date: '',
-    time: ''
+    time: '',
+    status: 'PAYMENT_INITIATED', // instead of 'active'
+    paymentMethod: 'UPI',
   };
+
+  generateUpiUrl(bookingId: string): string {
+    const pa = '9963192460@ybl'; // YOUR UPI ID
+    const pn = 'GymFlex';
+    const am = this.gym.price;
+    const tn = `GF_${bookingId}`;
+
+    return `upi://pay?pa=${pa}&pn=${encodeURIComponent(pn)}&am=${am}&cu=INR&tn=${tn}`;
+  }
+
 
   constructor(
     private route: ActivatedRoute,
@@ -101,47 +113,60 @@ export class CheckoutComponent implements OnInit {
   // SUBMIT FORM
   // ─────────────────────────────────────
   async onSubmit(): Promise<void> {
-    if (!this.form.name || !this.form.phone || !this.form.date) return;
+  if (!this.form.name || !this.form.phone || !this.form.date) return;
 
-    this.isSubmitting = true;
+  this.isSubmitting = true;
 
-    try {
-      // Build booking object
-      const bookingData = {
-        gymId: this.gym.id,
-        gymName: this.gym.name,
-        amount: this.gym.price,
-        userName: this.form.name,
-        phone: this.form.phone,
-        date: this.form.date, // YYYY-MM-DD
-        timestamp: Date.now(),
+  try {
+    // 1. Create booking FIRST
+    const bookingData = {
+      gymId: this.gym.id,
+      gymName: this.gym.name,
+      amount: this.gym.price,
+      userName: this.form.name,
+      phone: this.form.phone,
+      date: this.form.date,
+      time: this.form.time || null,
+      timestamp: Date.now(),
 
-        // optional fields
-        gymAddress: this.gym.address,
-        city: this.gym.city,
-        status: 'active' // active | expired | used
-      };
+      gymAddress: this.gym.address,
+      city: this.gym.city,
 
-      // Add to Firestore
-      const ref = await addDoc(collection(this.firestore, 'bookings'), bookingData);
+      status: 'PAYMENT_INITIATED',
+      paymentMethod: 'UPI'
+    };
 
-      const bookingId = ref.id;
+    const ref = await addDoc(
+      collection(this.firestore, 'bookings'),
+      bookingData
+    );
 
-      this.isSubmitting = false;
+    const bookingId = ref.id;
 
-      // Navigate to confirmation page WITH bookingId
-      this.router.navigate(['/confirmation'], {
-        state: {
-          bookingId,
-          booking: bookingData,
-          gym: this.gym
-        }
-      });
+    // 2. Generate UPI intent
+    const upiUrl = this.generateUpiUrl(bookingId);
 
-    } catch (err) {
-      console.error("Booking failed:", err);
-      this.isSubmitting = false;
-      alert("Booking failed. Please try again.");
-    }
+    // 3. Navigate to confirmation FIRST
+    this.router.navigate(['/confirmation'], {
+      state: {
+        bookingId,
+        booking: bookingData,
+        gym: this.gym,
+        paymentPending: true
+      }
+    });
+
+    // 4. Trigger UPI after navigation (important)
+    setTimeout(() => {
+      window.location.href = upiUrl;
+    }, 500);
+
+  } catch (err) {
+    console.error('Booking failed:', err);
+    alert('Booking failed. Please try again.');
+  } finally {
+    this.isSubmitting = false;
   }
+}
+
 }
