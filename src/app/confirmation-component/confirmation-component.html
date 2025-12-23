@@ -48,8 +48,22 @@
 
     <section class="success-header waiting">
       <h1 class="title">Payment submitted</h1>
+
       <p class="subtitle">
         We’re verifying your payment. This usually takes a few minutes.
+      </p>
+
+      <div class="loader-row">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+      <p class="helper-text subtle">
+        Checking payment status…
+      </p>
+
+      <p class="helper-text clickable" (click)="showHelp()">
+        Payment not reflected?
       </p>
     </section>
 
@@ -93,5 +107,40 @@
     </section>
 
   </ng-container>
+
+  <!-- ===================== -->
+<!-- PAYMENT HELP -->
+<!-- ===================== -->
+<ng-container *ngIf="paymentState === 'help'">
+
+  <section class="success-header waiting">
+    <h1 class="title" style="cursor: pointer; font-weight: 600;">Issues with your Payment?</h1>
+    <p class="subtitle">
+      Sometimes UPI confirmations can take a little longer.
+    </p>
+  </section>
+
+  <section class="info-card">
+    <ul>
+      <li>If your amount was debited, don’t worry.</li>
+      <li>We’ll verify it manually.</li>
+      <li>Have your UPI reference number ready if possible.</li>
+    </ul>
+  </section>
+
+  <a
+    class="primary-btn full-width whatsapp-btn"
+    href="https://wa.me/919963192460?text=Hi%20GymFlex%20team,%20my%20payment%20is%20not%20reflected.%20Booking%20ID:%20{{ bookingId }}"
+    target="_blank"
+  >
+    Contact us on WhatsApp
+  </a>
+
+  <p class="helper-text">
+    Our team usually responds within a few minutes.
+  </p>
+
+</ng-container>
+
 
 </div>

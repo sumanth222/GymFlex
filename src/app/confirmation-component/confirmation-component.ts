@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Firestore, doc, onSnapshot, updateDoc } from '@angular/fire/firestore';
 import { Unsubscribe } from 'firebase/firestore';
@@ -16,11 +16,11 @@ export class ConfirmationComponent implements OnInit {
   bookingId: string | null = null;
   booking: any = null;
   gym: any = null;
-  paymentState: 'pending' | 'submitted' | 'confirmed' = 'pending';
+  paymentState: 'pending' | 'submitted' | 'confirmed' | 'help' = 'pending';
   private bookingUnsub?: Unsubscribe;
 
 
-  constructor(private router: Router, private firestore: Firestore) {}
+  constructor(private router: Router, private firestore: Firestore, private ngZone: NgZone) {}
 
   ngOnInit(): void {
     const nav = history.state;
@@ -38,6 +38,9 @@ export class ConfirmationComponent implements OnInit {
     const id = this.bookingId;
 
     if(id != null){
+
+      console.log("Listening to ", id);
+
       const bookingRef = doc(this.firestore, 'bookings', id);
       this.bookingUnsub = onSnapshot(bookingRef, (snapshot) => {
         if (!snapshot.exists()) return;
@@ -55,8 +58,10 @@ export class ConfirmationComponent implements OnInit {
             this.paymentState = 'submitted';
             break;
 
-          case 'PAID_CONFIRMED':
-            this.paymentState = 'confirmed';
+          case 'PAYMENT_CONFIRMED':
+              this.ngZone.run(() => {
+              this.paymentState = 'confirmed';
+            });
             break;
         }
       });
@@ -65,15 +70,23 @@ export class ConfirmationComponent implements OnInit {
 
 
   async markAsPaid(): Promise<void> {
-      if(this.bookingId != null){
-      const bookingRef = doc(this.firestore, 'bookings', this.bookingId);
+  // 1. Optimistic UI update
+  this.paymentState = 'submitted';
 
-      await updateDoc(bookingRef, {
-        status: 'PAYMENT_PENDING_CONFIRMATION',
-        paidAt: Date.now()
-      });
-    }
+  if(this.bookingId != null){
+    const bookingRef = doc(this.firestore, 'bookings', this.bookingId);
+    await updateDoc(bookingRef, {
+      status: 'PAYMENT_PENDING_CONFIRMATION',
+      paidAt: Date.now()
+    });
   }
+}
+
+
+  showHelp(): void {
+    this.paymentState = 'help';
+  }
+
 
   goHome() {
     this.router.navigate(['/']);
