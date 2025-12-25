@@ -3,6 +3,7 @@ import { Component, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Firestore, doc, onSnapshot, updateDoc } from '@angular/fire/firestore';
 import { Unsubscribe } from 'firebase/firestore';
+import { logEvent } from '../logger';
 
 
 @Component({
@@ -32,6 +33,12 @@ export class ConfirmationComponent implements OnInit {
     if (!this.bookingId) return;
 
     this.listenToBooking();
+
+    logEvent(this.firestore, {
+      page: 'Confirmation',
+      action: 'page_view',
+      gymId: '0'
+    });
   }
 
   listenToBooking(): void {

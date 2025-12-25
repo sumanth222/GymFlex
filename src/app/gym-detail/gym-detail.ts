@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, NgZone, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';
+import { logEvent } from '../logger';
 
 // Simple state union for detail screen
 type GymDetailState = 'loading' | 'success' | 'empty' | 'error';
@@ -41,6 +42,12 @@ export class GymDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadGym();
+
+    logEvent(this.firestore, {
+      page: 'Gym view',
+      action: 'page_view',
+      gymId: this.gym.name
+    });
   }
 
   // ─────────────────────────────────────────

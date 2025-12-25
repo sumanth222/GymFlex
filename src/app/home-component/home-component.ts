@@ -3,6 +3,7 @@ import { Component, NgZone, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Firestore, collection, getDocs } from '@angular/fire/firestore';
+import { logEvent } from '../logger';
 // import { GymService } from '../../services/gym.service';
 
 
@@ -39,6 +40,11 @@ constructor(private router: Router, private firestore: Firestore, private ngZone
 
 ngOnInit(): void {
     this.loadGyms();
+    logEvent(this.firestore, {
+      page: 'Home',
+      action: 'page_view',
+      gymId: '0'
+    });
 }
 
 

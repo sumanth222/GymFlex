@@ -7,6 +7,7 @@ import { Component, NgZone, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Firestore, collection, addDoc } from '@angular/fire/firestore';
 import { doc, getDoc } from '@angular/fire/firestore';
+import { logEvent } from '../logger';
 
 
 type CheckoutState = 'loading' | 'success' | 'empty' | 'error';
@@ -54,6 +55,12 @@ export class CheckoutComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadGym();
+
+    logEvent(this.firestore, {
+      page: 'Checkout',
+      action: 'page_view',
+      gymId: '0'
+    });
   }
 
   // ─────────────────────────────────────
