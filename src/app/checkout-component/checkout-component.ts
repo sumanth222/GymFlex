@@ -158,7 +158,7 @@ export class CheckoutComponent implements OnInit {
 
     // 4. Trigger UPI after navigation (important)
     setTimeout(() => {
-      //window.location.href = upiUrl;
+      window.location.href = upiUrl;
     }, 500);
 
   } catch (err) {
