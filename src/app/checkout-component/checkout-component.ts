@@ -39,7 +39,7 @@ export class CheckoutComponent implements OnInit {
   generateUpiUrl(bookingId: string): string {
     const pa = '9963192460@ybl'; // YOUR UPI ID
     const pn = 'GymFlex';
-    const am = this.gym.price;
+    const am = this.gym.discountedPrice ?? this.gym.price;
     const tn = `GF_${bookingId}`;
 
     return `upi://pay?pa=${pa}&pn=${encodeURIComponent(pn)}&am=${am}&cu=INR&tn=${tn}`;
@@ -91,7 +91,7 @@ export class CheckoutComponent implements OnInit {
         // fallback values (for safety)
         name: gymData['name'] ?? 'Gym',
         address: gymData['address'] ?? '',
-        price: gymData['price'] ?? 0
+        price: gymData['discountedPrice'] ?? gymData['price']
       };
 
 

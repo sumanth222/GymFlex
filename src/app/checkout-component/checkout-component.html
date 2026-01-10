@@ -12,7 +12,7 @@
       <div class="gym-address">{{ gym.address }}</div>
       <div class="price-row">
         <span>Day pass</span>
-        <span class="price">₹{{ gym.price }}</span>
+        <span class="price">₹{{ gym.discountedPrice ? gym.discountedPrice : gym.price }}</span>
       </div>
     </div>
   </section>
