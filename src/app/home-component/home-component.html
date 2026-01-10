@@ -77,7 +77,24 @@
         <p class="address">{{ gym.address }}</p>
 
         <div class="meta-row">
-          <span class="price">₹{{ gym.price }} / day</span>
+          <div class="price-wrap">
+              <!-- DISCOUNTED -->
+              <ng-container *ngIf="gym.discountedPrice && gym.discountedPrice < gym.price; else normalPrice">
+                <span class="price-original">₹{{ gym.price }}</span>
+                <span class="price-discounted">
+                  ₹{{ gym.discountedPrice }} <small>/ day</small>
+                </span>
+                <span class="save-badge">
+                  Save ₹{{ gym.price - gym.discountedPrice }}
+                </span>
+              </ng-container>
+
+              <!-- NORMAL -->
+              <ng-template #normalPrice>
+                <span class="price">₹{{ gym.price }} / day</span>
+              </ng-template>
+                
+            </div>
           <span class="rating">⭐ {{ gym.rating }}</span>
         </div>
       </div>
